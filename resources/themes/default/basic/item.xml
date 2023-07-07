@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window>
+  <ListContainerElement class="listitem" height="auto">
+    <HBox height="auto" mouse="false" padding="10,5,10,5">
+          <Label name="label_title" width="stretch" mouse="false" normaltextcolor="black"/>
+    </HBox>
+  </ListContainerElement>
+</Window>
