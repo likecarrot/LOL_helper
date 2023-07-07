@@ -77,8 +77,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\download\NIM_Duilib_Framework-1.0.0;C:\vcpkg\packages\curl_x86-windows-static-md\include;C:\vcpkg\packages\zlib_x86-windows-static-md\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\vcpkg\packages\curl_x86-windows-static-md\lib;C:\vcpkg\packages\zlib_x86-windows-static-md\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\download\NIM_Duilib_Framework-1.0.0;C:\vcpkg\packages\curl_x86-windows-static\include;C:\vcpkg\packages\zlib_x86-windows-static\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\vcpkg\packages\curl_x86-windows-static\lib;C:\vcpkg\packages\zlib_x86-windows-static\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -111,7 +111,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;BUILDING_LIBCURL;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -120,6 +120,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -155,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basic_form.cpp" />
+    <ClCompile Include="dynamic_skin.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="lcu_riot\config.cpp" />
     <ClCompile Include="lcu_riot\lol_helper.cpp" />
@@ -165,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basic_form.h" />
+    <ClInclude Include="dynamic_skin.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="lcu_riot\config.h" />
     <ClInclude Include="lcu_riot\json.hpp" />

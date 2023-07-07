@@ -122,11 +122,51 @@ std::string LCU_REQUEST::request(RequestMethod method, std::string path, std::st
 	res = curl_easy_perform(session);
 	return response;
 }
+bool LCU_REQUEST::request(RequestMethod method, std::string path,  FILE* fp){
+	std::string url = base_url + path;
+	CURLcode res;
 
+	auto it = method_options.find(method);
+	if (it != method_options.end()) {
+		curl_easy_setopt(session, (it->second), 1L);
+		if (method == RequestMethod::PUT_METHOD) {
+			curl_easy_setopt(session, CURLOPT_CUSTOMREQUEST, "PUT");
+		}
+		else if (method == RequestMethod::DELETE_METHOD) {
+			curl_easy_setopt(session, CURLOPT_CUSTOMREQUEST, "DELETE");
+		}
+		else if (method == RequestMethod::POST_METHOD) {
+			curl_easy_setopt(session, CURLOPT_POST, 1L);
+		}
+		else if (method == RequestMethod::PATCH_METHOD) {
+			curl_easy_setopt(session, CURLOPT_CUSTOMREQUEST, "PATCH");
+		}
+	}
+	else {
+		return "";
+	}
+	curl_easy_setopt(session, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(session, CURLOPT_WRITEFUNCTION, write_file_callback);
+	curl_easy_setopt(session, CURLOPT_WRITEDATA, fp);
+
+	res = curl_easy_perform(session);
+	if (res != CURLE_OK)
+	{
+		OutputDebugStringA(curl_easy_strerror(res));
+		return	false;
+	}
+	return	true;
+}
 size_t LCU_REQUEST::write_callback(void* contents, size_t size, size_t nmemb, void* userp) {
 	((std::string*)userp)->append((char*)contents, size * nmemb);
 	return size * nmemb;
 }
-
+// 回调函数，用于写入文件
+size_t LCU_REQUEST::write_file_callback(void* ptr, size_t size, size_t nmemb, FILE* stream)
+{
+	size_t written;
+	written = fwrite(ptr, size, nmemb, stream);
+	return written;
+}
 
 

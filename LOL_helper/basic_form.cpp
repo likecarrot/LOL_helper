@@ -1,4 +1,6 @@
 #include "basic_form.h"
+#pragma comment(lib, "Urlmon.lib") 
+#include	<Shlobj.h>
 
 const std::wstring BasicForm::kClassName = L"Basic";
 
@@ -86,6 +88,7 @@ LRESULT BasicForm::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		Shell_NotifyIcon(NIM_DELETE, &m_trayIcon);
 		//显示主窗口
 		ShowWindow(SW_SHOWNORMAL);
+		//github开源
 	}
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }
@@ -137,7 +140,7 @@ void	BasicForm::init_all_controls() {
 	_ui_selectchampion = static_cast<ui::Label*>(FindControl(L"_ui_champion"));
 	_champion_list = dynamic_cast<ui::ListBox*>(FindControl(L"list"));
 	_ui_search_champion = dynamic_cast<ui::RichEdit*>(FindControl(L"edit_total"));
-
+	summoner_icon = dynamic_cast<ui::Control*>(FindControl(L"summoner-icon"));
 
 	_ui_player_name = static_cast<ui::Label*>(FindControl(L"player_name"));
 	_ui_player_level = static_cast<ui::Label*>(FindControl(L"player_level"));
@@ -149,6 +152,11 @@ void	BasicForm::init_all_controls() {
 
 	display_game_status = static_cast<ui::Label*>(FindControl(L"display_game_status"));
 	_ui_close = dynamic_cast<ui::Button*>(FindControl(L"closebtn1"));
+
+	_download_R3nzdll = dynamic_cast<ui::Label*>(FindControl(L"_download_progress"));
+	_dynamic_skin = dynamic_cast<ui::CheckBox*>(FindControl(L"_dynamic_skin"));
+
+	nbase::ThreadManager::PostDelayedTask(kThreadMain, nbase::Bind(&BasicForm::Receive_check, this, dynamic_skin_host_my::check_Allow()), nbase::TimeDelta::FromSeconds(1));
 }
 
 void	BasicForm::init_set_listen_controls() {
@@ -185,6 +193,10 @@ void	BasicForm::init_set_listen_controls() {
 	_ui_search_champion->AttachTextChange(std::bind(&BasicForm::sort_champions_datas, this, std::placeholders::_1));
 
 	_ui_close->AttachClick(std::bind(&BasicForm::OnUiMyClose, this, std::placeholders::_1));
+
+	str = L"风险功能:动态换肤";
+	add_str_status(str, _dynamic_skin->IsSelected());
+	_dynamic_skin->SetText(str);
 }
 
 
@@ -258,6 +270,7 @@ void	BasicForm::Receive_Game_status(GAME_STATUS gamestatus) {
 void	BasicForm::Receive_Summoner_info(SUMMONER_INFO& info) {
 	_ui_player_name->SetText(string2wstring(info.displayName));
 	_ui_player_level->SetText(std::to_wstring(info.summonerLevel));
+	summoner_icon->SetBkImage(string2wstring(client.download_icons(info.profileIconId)));
 }
 
 void	BasicForm::Receive_Rank_level(RANK_LEVEL& rank_Datas) {
@@ -312,6 +325,57 @@ void	BasicForm::Receive_Owner_champions(std::vector<CHAMPION>& owner_datas) {
 	}
 }
 
+void	BasicForm::Receive_check(bool	check) {
+	if (check==false)
+	{
+		_dynamic_skin->SetText(L"O No 隐藏功能暂时不开启");
+	}
+	else
+	{
+		std::wstring str = L"风险功能:动态换肤";
+		add_str_status(str, _dynamic_skin->IsSelected());
+		_dynamic_skin->SetText(str);
+		_dynamic_skin->AttachSelect(std::bind(&BasicForm::Open_dynamic_skin, this, std::placeholders::_1));
+		_dynamic_skin->AttachUnSelect(std::bind(&BasicForm::Open_dynamic_skin, this, std::placeholders::_1));
+		nbase::ThreadManager::PostDelayedTask(kThreadMain, nbase::Bind(&BasicForm::Receive_download_dll_path, this, dynamic_skin_host_my::download_dll()), nbase::TimeDelta::FromSeconds(1));
+	}//风险功能:动态换肤
+}
+
+bool	BasicForm::Open_dynamic_skin(ui::EventArgs* args) {
+	if (args->Type == ui::kEventSelect || args->Type == ui::kEventUnSelect)
+	{
+		if (!origin_dll_path.empty())
+		{
+			if (args->Type == ui::kEventSelect) {
+				if (!dynamic_skin_host_my::open_dynamic_skin(origin_dll_path)) {
+					_dynamic_skin->Selected(false, false);
+				}
+			}
+			if (args->Type == ui::kEventUnSelect) {
+				if (!dynamic_skin_host_my::close_dynamic_skin()) {
+					_dynamic_skin->Selected(true, false);
+				}
+			}
+		}
+		else {
+			_dynamic_skin->Selected(false, false);
+		}
+		ui::CheckBox* c = static_cast<ui::CheckBox*>((args->pSender));
+		auto	str = c->GetText();
+		add_str_status(str, c->IsSelected());
+		c->SetText(str);
+	}
+	return	true;
+}
+void	BasicForm::Receive_download_dll_path(std::string	save_path) {
+	if (!save_path.empty())
+	{
+		origin_dll_path = save_path;
+		_download_R3nzdll->SetText(L"插件下载完毕");
+	}else
+		_download_R3nzdll->SetText(L"插件下载失败");
+}
+
 RANK_LEVEL_ITEM BasicForm::get(RANK_LEVEL& vec, std::string en)const
 {
 	RANK_LEVEL_ITEM	b;
@@ -354,6 +418,7 @@ bool	BasicForm::OnUiMyClose(ui::EventArgs* args) {
 	AddTrayIcon();
 	return true;
 }
+
 
 void BasicForm::AddTrayIcon() {
 	// 加载托盘图标

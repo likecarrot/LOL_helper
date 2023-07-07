@@ -5,7 +5,7 @@
 #include <vector>
 #include <curl/curl.h>
 #include <map>
-
+#include    <functional>
 
 #pragma comment(lib, "libcurl.lib")   
 #pragma comment(lib, "wldap32.lib")   
@@ -30,6 +30,8 @@ public:
     std::string request(RequestMethod method, std::string path);
     std::string request(RequestMethod method, std::string path,std::string child_web);
     std::string request(RequestMethod method, std::string path, std::string child_web, std::string params);
+    bool request(RequestMethod method, std::string path,FILE* fp);
+
     static LCU_REQUEST& getInstance() {
         static LCU_REQUEST instance;
         return instance;
@@ -39,6 +41,8 @@ public:
         instance.reset_auth(auth, port);
     }
     void reset_auth(std::string auth, std::string port);
+    std::string get_auth() { return auth_; };
+    std::string get_port() { return port_; };
 private:
     LCU_REQUEST() {}
     ~LCU_REQUEST() {
@@ -54,6 +58,7 @@ private:
     // 其他成员变量
     CURL* session= curl_easy_init();
     std::string base_url;
+    static size_t write_file_callback(void* ptr, size_t size, size_t nmemb, FILE* stream);
     static size_t write_callback(void* contents, size_t size, size_t nmemb, void* userp);
     const std::map<LCU_REQUEST::RequestMethod, CURLoption> method_options = {
     {RequestMethod::GET_METHOD, CURLOPT_HTTPGET},

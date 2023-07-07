@@ -27,6 +27,7 @@ public:
 	void	search_queue();		//这个函数是在游戏房间内,进入匹配队列
 	int		get_owner_champions();	//获取已经拥有的英雄
 	int		get_all_champions();	//获取所有英雄
+	std::string	download_icons(int	icon_id);	//下载头像,返回值是保存的地址
 	void	lock_champions(int	champion_id);		//锁定选择英雄
 	static std::string GetProcessCommandLine(const std::string& cmdLine);
 

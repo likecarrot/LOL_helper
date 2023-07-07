@@ -19,6 +19,9 @@
     <Filter Include="头文件\items">
       <UniqueIdentifier>{2d158cba-d150-46c6-8977-d46a89110e6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="connect_my_service">
+      <UniqueIdentifier>{b2e177b3-4732-4516-9864-e39b59b2d624}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="basic_form.cpp">
@@ -44,6 +47,9 @@
     </ClCompile>
     <ClCompile Include="item.cpp">
       <Filter>头文件\items</Filter>
+    </ClCompile>
+    <ClCompile Include="dynamic_skin.cpp">
+      <Filter>connect_my_service</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dynamic_skin.h">
+      <Filter>connect_my_service</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

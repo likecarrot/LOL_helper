@@ -8,7 +8,7 @@
 #include	<Windows.h>
 #include	<shellapi.h>
 #include	"resource.h"
-
+#include	"dynamic_skin.h"
 
 // 托盘图标的唯一标识符
 #define TRAY_ICON_ID 1001
@@ -63,6 +63,10 @@ public:
 	ui::CheckBox* _ui_lockchampion;
 	ui::Label* _ui_selectchampion;	//用户双击后提示目前所需要拿的英雄,仅作显示用
 	ui::VBox* tools_area;		//功能区域的容器
+	ui::Control* summoner_icon;	//用户头像
+	ui::CheckBox* _dynamic_skin;	//动态换肤 这个控件默认是隐藏的
+	ui::Label* _download_R3nzdll;//下载进度
+
 	bool	OnSelected(ui::EventArgs* args);
 	void	update_select_status();
 	bool	OnSelectedChampion(ui::EventArgs* args);
@@ -114,6 +118,14 @@ private:
 	void	Receive_Summoner_info(SUMMONER_INFO& info);
 	void	Receive_Rank_level(RANK_LEVEL& rank_Datas);
 	void	Receive_Owner_champions(std::vector<CHAMPION>& owner_datas);
+
+	//对动态皮肤新加入的处理
+	//2023-7-16
+	std::string	origin_dll_path;	//下载好的 皮肤 dll 的路径
+	std::string	lol_game_path;	//lol\\game路径
+	void	Receive_check(bool	check);
+	void	Receive_download_dll_path(std::string	save_path);
+	bool	Open_dynamic_skin(ui::EventArgs* args);
 };
 
 

@@ -1,4 +1,5 @@
 ﻿#include	"lol_helper.h"
+#include <ShlObj.h>
 
 helper::helper()
 {
@@ -199,6 +200,29 @@ int	helper::get_owner_champions() {
 	}
 	return	owner_champions.size();
 }	//获取已经拥有的英雄
+
+std::string	helper::download_icons(int	icon_id) {
+	//"https://127.0.0.1:51932/lol-game-data/assets/v1/profile-icons/1000.jpg";
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+
+	CHAR szPath[MAX_PATH] = { 0 };
+	SHGetSpecialFolderPathA(NULL, szPath, CSIDL_APPDATA, FALSE);
+	FILE* fp;
+
+	std::string	url2 = ("/lol-game-data/assets/v1/profile-icons/");
+	url2.append(std::to_string(icon_id) + ".jpg");
+
+	std::string	save_folder(szPath);
+	save_folder.append("\\icons.jpg");
+	
+
+	if (fopen_s(&fp, save_folder.c_str(), "wb") == 0)
+	{
+		bool ret = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, url2,fp);
+		fclose(fp);
+	}
+	return	save_folder;
+}
 int		helper::get_all_champions() {
 	all_champions.clear();
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable

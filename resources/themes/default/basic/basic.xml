@@ -38,6 +38,10 @@
 
       <VBox width="180" bkcolor="bk_wnd_lightcolor">
         <!-- 这是右边 显示区-->
+        <VBox width="180" height="180">
+          <Control width="stretch" height="stretch" name="summoner-icon" />
+        </VBox>
+
         <VBox height="40">
           <HBox margin="10,5,0,0">
             <Label text="召唤师:" width="auto" endellipsis="false" normaltextcolor="black" />
