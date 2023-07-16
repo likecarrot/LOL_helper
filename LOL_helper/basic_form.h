@@ -8,11 +8,21 @@
 #include	<Windows.h>
 #include	<shellapi.h>
 #include	"resource.h"
+#include	"utils.hpp"
+#include	"pop_form.h"
+#include	"game_resource.h"
+#include	"MiscThread.h"
+
+//#define	DYNAMIC_SKIN		//加入动态换肤
+#ifdef DYNAMIC_SKIN
 #include	"dynamic_skin.h"
+#endif // DYNAMIC_SKIN
+
 
 // 托盘图标的唯一标识符
 #define TRAY_ICON_ID 1001
-#define	WM_ONCLOSE	1002
+#define	MENUBAR_ONCLOSE	1002
+#define	MENUBAR_COPYQQ	1003
 
 struct _UI_STATUS
 {
@@ -21,7 +31,9 @@ struct _UI_STATUS
 	bool	_ui_searchqueue_status = false;
 	bool	_ui_lockchampion_status = false;
 	int		_ui_champion_id = 0;
+	bool	_ui_player_help = true;
 };
+
 class BasicForm : public ui::WindowImplBase
 {
 public:
@@ -61,6 +73,7 @@ public:
 	ui::CheckBox* _ui_nextgame;
 	ui::CheckBox* _ui_searchqueue;
 	ui::CheckBox* _ui_lockchampion;
+	ui::CheckBox* _ui_player_helper;//对局助手
 	ui::Label* _ui_selectchampion;	//用户双击后提示目前所需要拿的英雄,仅作显示用
 	ui::VBox* tools_area;		//功能区域的容器
 	ui::Control* summoner_icon;	//用户头像
@@ -72,6 +85,7 @@ public:
 	bool	OnSelectedChampion(ui::EventArgs* args);
 	bool	OnUiMyClose(ui::EventArgs* args);
 
+	void	open_player_helper_tools();
 
 	ui::Label* _ui_player_name;
 	ui::Label* _ui_player_level;
@@ -93,7 +107,8 @@ private:
 
 	//我所需要的结构和数据
 	_UI_STATUS	ui_datas;
-	helper		client;
+
+	Pop_form* tools_windows;//lol助手窗口
 
 	//托盘图标
 	NOTIFYICONDATA	m_trayIcon;
@@ -114,11 +129,13 @@ private:
 
 	bool	sort_champions_datas(ui::EventArgs* args);
 
-	void	Receive_Game_status(GAME_STATUS gamestatus);
-	void	Receive_Summoner_info(SUMMONER_INFO& info);
-	void	Receive_Rank_level(RANK_LEVEL& rank_Datas);
-	void	Receive_Owner_champions(std::vector<CHAMPION>& owner_datas);
+	void	Receive_Datas1(GAME_STATUS gamestatus);
+	void	Receive_Datas2(SUMMONER_INFO& info);
+	void	Receive_Datas3(RANK_LEVEL& rank_Datas);
+	void	Receive_Datas4(std::vector<CHAMPION>& owner_datas);
 
+
+#ifdef DYNAMIC_SKIN
 	//对动态皮肤新加入的处理
 	//2023-7-16
 	std::string	origin_dll_path;	//下载好的 皮肤 dll 的路径
@@ -126,6 +143,7 @@ private:
 	void	Receive_check(bool	check);
 	void	Receive_download_dll_path(std::string	save_path);
 	bool	Open_dynamic_skin(ui::EventArgs* args);
+#endif // DYNAMIC_SKIN
 };
 
 

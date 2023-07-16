@@ -24,26 +24,22 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	return 0;
 }
 
-void MiscThread::Init()
-{
-	nbase::ThreadManager::RegisterThread(thread_id_);
-}
-
-void MiscThread::Cleanup()
-{
-	nbase::ThreadManager::UnregisterThread();
-}
 
 void MainThread::Init()
 {
 
-	check_only();
+	//check_only();
 
 	nbase::ThreadManager::RegisterThread(kThreadMain);
+
 
 	// 启动杂事处理线程
 	misc_thread_.reset(new MiscThread(kThreadGlobalMisc, "Global Misc Thread"));
 	misc_thread_->Start();
+
+	// 启动杂事处理线程
+	misc_thread_loop.reset(new MiscThread(kThreadGlobalLoopMisc, "Global Misc Loop Thread"));
+	misc_thread_loop->Start();
 
 #ifdef USE_RESOURCE_FILE
 	// 获取资源路径，初始化全局参数
@@ -61,7 +57,7 @@ void MainThread::Init()
 
 	// 创建一个默认带有阴影的居中窗口
 	BasicForm* window = new BasicForm();
-	window->Create(NULL, L"自动接收助手", WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
+	window->Create(NULL, L"自动接收助手", WS_OVERLAPPEDWINDOW &~WS_MAXIMIZEBOX, 0);
 	window->CenterWindow();
 	window->ShowWindow();
 }
@@ -73,6 +69,9 @@ void MainThread::Cleanup()
 	misc_thread_->Stop();
 	misc_thread_.reset(nullptr);
 
+	misc_thread_loop->Stop();
+	misc_thread_loop.reset(nullptr);
+	
 	SetThreadWasQuitProperly(true);
 	nbase::ThreadManager::UnregisterThread();
 }

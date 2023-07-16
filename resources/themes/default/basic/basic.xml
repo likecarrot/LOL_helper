@@ -21,6 +21,9 @@
             margin="0,10,0,0" />
           <CheckBox text="自动锁定英雄" name="_ui_lockchampion" selected="false" selectedtextcolor="red"
             margin="0,10,0,0" />
+          <CheckBox text="对局助手" name="matching_helper" selected="true" selectedtextcolor="red"
+            margin="0,10,0,0" />
+
           <Label text="目前预选英雄" name="_ui_champion" width="110" endellipsis="false"
             normaltextcolor="black" margin="0,10,0,0" />
           <Box bordersize="1" bordercolor="splitline_level1" width="110" height="25"
@@ -38,8 +41,9 @@
 
       <VBox width="180" bkcolor="bk_wnd_lightcolor">
         <!-- 这是右边 显示区-->
-        <VBox width="180" height="180">
-          <Control width="stretch" height="stretch" name="summoner-icon" />
+        <VBox width="stretch" height="120">
+          <Control width="100" height="100" name="summoner-icon" halign="center" valign="center"
+            bordercolor="gray" bordersize="2,2,2,2" />
         </VBox>
 
         <VBox height="40">
@@ -84,7 +88,15 @@
               normaltextcolor="black" />
           </HBox>
         </VBox>
-        <VBox margin="10,15,0,0">
+
+        <VBox margin="10,5,0,0">
+          <Label width="auto" height="10" endellipsis="false" normaltextcolor="black"
+            name="_download_progress" />
+          <CheckBox text="O No 隐藏功能暂时不开启" name="_dynamic_skin" selected="false"
+            selectedtextcolor="red"
+          />
+        </VBox>
+        <VBox margin="10,5,0,0">
           <Label text="游戏状态:" width="auto" endellipsis="false" normaltextcolor="black" />
           <Label name="display_game_status" text="N/A" width="auto" endellipsis="false"
             normaltextcolor="black" />

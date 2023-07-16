@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window>
+    <ListContainerElement class="listitem" height="auto">
+        <VBox height="40" mouse="false" padding="5,5,5,5">
+            <HBox margin="0,3,0,0" mouse="false">
+                <Label name="team_player_name" />
+
+                <VBox>
+                    <HBox>
+                        <Label text="单双:" />
+                        <Label name="team_player_rank_SOLO" />
+                    </HBox>
+                    <HBox>
+                        <Label text="灵活:" />
+                        <Label name="team_player_rank_FLEX" />
+                    </HBox>
+                </VBox>
+
+                <VBox>
+                    <HBox>
+                        <Label text="上赛季:" />
+                        <Label name="team_player_rank_SOLO_last" />
+                    </HBox>
+                    <HBox>
+                        <Label text="上赛季:" />
+                        <Label name="team_player_rank_FLEX_last" />
+                    </HBox>
+                </VBox>
+
+            </HBox>
+
+
+            <HBox margin="0,0,0,5" mouse="false">
+                <Label name="熟练度top:" />
+                <Control name="top1" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top2" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top3" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top4" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top5" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top6" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+            </HBox>
+        </VBox>
+    </ListContainerElement>
+</Window>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="275,500">
+  <Box>
+    <VListBox class="list" name="list">
+    </VListBox>
+  </Box>
+  <!-- <VirtualTileBox class="list" name="list" vscrollunit="70" itemsize="220,60" bordersize="1"
+    bordercolor="splitline_level2" padding="1,1,1,1" /> -->
+</Window>

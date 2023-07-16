@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClCompile Include="basic_form.cpp" />
     <ClCompile Include="dynamic_skin.cpp" />
+    <ClCompile Include="game_resource.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="lcu_riot\config.cpp" />
     <ClCompile Include="lcu_riot\lol_helper.cpp" />
@@ -164,10 +165,15 @@
     <ClCompile Include="lcu_riot\request_utils.cpp" />
     <ClCompile Include="lcu_riot\utils.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="match_items.cpp" />
+    <ClCompile Include="match_items.h" />
+    <ClCompile Include="MiscThread.cpp" />
+    <ClCompile Include="pop_form.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basic_form.h" />
     <ClInclude Include="dynamic_skin.h" />
+    <ClInclude Include="game_resource.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="lcu_riot\config.h" />
     <ClInclude Include="lcu_riot\json.hpp" />
@@ -178,7 +184,10 @@
     <ClInclude Include="lcu_riot\struct.h" />
     <ClInclude Include="lcu_riot\utils.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="MiscThread.h" />
+    <ClInclude Include="pop_form.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="D:\download\NIM_Duilib_Framework-1.0.0\base\base.vcxproj">

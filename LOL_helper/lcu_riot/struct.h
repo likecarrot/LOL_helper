@@ -15,7 +15,7 @@ struct DOMAIN_INFO
 struct SUMMONER_INFO
 {
 	int profileIconId;      //icon id
-	std::string accountId;
+	std::string accountId;	//这个值应该是等于 accountid的
 	std::string displayName;
 	std::string puuid;
 	int summonerLevel;
@@ -26,6 +26,66 @@ struct SUMMONER_INFO
 		this->puuid = "";
 		this->summonerLevel = 0;
 	}
+};
+
+struct TEAM_SUMMONER_INFO
+{
+	std::string	summonerId;
+	std::string	puuid;
+	std::wstring	displayName;
+	int	participantId;	//本次对局中的序号
+};
+
+static const std::map<std::string, std::string>   GAME_MODE = {
+	{"CLASSIC","经典模式"},
+	{"ARAM","极地大乱斗"},
+	{"CHERRY","斗魂竞技场"}
+};
+struct PARTICIPANTS
+{
+	int	participantId;//所处的序号
+	int	championId;	//选择的英雄
+	int	assists;	//助攻
+	int	champLevel;	//等级
+	int	deaths;		//死亡次数
+	int	kills;		//击杀次数
+	int	visionScore;//视野得分
+	int	goldEarned;	//本局获得金币
+	int	totalDamageDealtToChampions;//本局对英雄造成的伤害总和
+	bool	win;	//胜利?
+};
+struct PLAYER_HISTORY_MATCHDATA
+{
+	unsigned	long long	gameCreation;//1690566965655,
+	unsigned	long long	gameDuration;//2067
+	std::string	gameId;
+	std::string	gameMode;
+	PARTICIPANTS participants;
+	bool	isRank = false;	//是排位赛吗
+};
+struct BANS
+{
+	int	champid;
+	int	pickTurn;
+};
+struct MATCH_DETAILED_DATA//队伍的对局信息
+{
+	unsigned	long long	gameCreation;// 1690566965655,
+	unsigned	long long	gameDuration;//2067
+	std::string	gameId;
+	std::string	gameMode;	//如果是斗魂竞技场 1-2 一队 3-4 一队
+	bool	isRank = false;	//是排位赛吗
+	std::vector<TEAM_SUMMONER_INFO>	player_info;	//玩家信息
+	std::vector<PARTICIPANTS>	player_datas;
+	std::vector<BANS>	bans;
+};
+
+struct CHAMPION_TOP
+{
+	int	championId;
+	int	championLevel;
+	int	championPoints;
+	std::string	lastPlayTime;
 };
 
 //requestUtil.doGet("/lol-ranked/v1/ranked-stats/" + puuid);
@@ -48,6 +108,7 @@ enum class RANK_LEVEL_INDEX
 	RANKED_TFT_TURBO,
 	RANKED_TFT_DOUBLE_UP
 };
+
 /*RANK_LEVEL_ITEM RANKED_SOLO_5x5;
 RANK_LEVEL_ITEM RANKED_FLEX_SR;
 RANK_LEVEL_ITEM RANKED_TFT;
@@ -68,26 +129,14 @@ static const std::map<std::string, std::string>   rank_tiers_dict = {
 	{"MASTER","超凡大师"},
 	{"IRON","坚韧黑铁"},
 	{"DIAMOND","璀璨钻石"},
+	{"EMERALD","流光翡翠"},
 	{"PLATINUM","华贵铂金"},
 	{"GOLD","荣耀黄金"},
 	{"SILVER","不屈白银"},
 	{"BRONZE","英勇黄铜"},
 	{"UNRANKED","没有段位"}
-};//排位段位对应中文
-//static const std::map<std::string, std::string>   tft_rank_tiers = {
-//    {"CHALLENGER","最强王者"},
-//    {"GRANDMASTER","傲世宗师"},
-//    {"MASTER","超凡大师"},
-//    {"IRON","坚韧黑铁"},
-//    {"DIAMOND","璀璨钻石"},
-//    {"PLATINUM","华贵铂金"},
-//    {"GOLD","荣耀黄金"},
-//    {"SILVER","不屈白银"},
-//    {"BRONZE","英勇黄铜"},
-//    {"UNRANKED","没有段位"}
-//};//云顶之弈排位(不包括经典云顶之弈排位) 段位对应中文 双人模式的段位好像改回成经典模式一致的命名规则了
+};
 
-// String s = requestUtil.doGet("/lol-gameflow/v1/gameflow-phase");
 enum class GAME_STATUS
 {
 	Error = 0,

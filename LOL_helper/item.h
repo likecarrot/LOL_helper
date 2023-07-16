@@ -15,11 +15,6 @@ private:
 	bool OnRemove(ui::EventArgs* args);
 
 private:
-	ui::ListBox* list_box_;
-
-	ui::Control* control_img_;
 	ui::Label* label_title_;
-	ui::Progress* progress_;
-	ui::Button* btn_del_;
 };
 

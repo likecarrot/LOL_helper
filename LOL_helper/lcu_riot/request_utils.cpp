@@ -23,7 +23,7 @@ std::string LCU_REQUEST::request(RequestMethod method, std::string path) {
 	std::string url = base_url + path;
 	CURLcode res;
 	std::string response;
-
+	std::lock_guard<std::mutex> lock(mtx);
 	auto it = method_options.find(method);
 	if (it != method_options.end()) {
 		curl_easy_setopt(session, (it->second), 1L);
@@ -54,7 +54,7 @@ std::string LCU_REQUEST::request(RequestMethod method, std::string path, std::st
 	std::string url = base_url + path+child_web;
 	CURLcode res;
 	std::string response;
-
+	std::lock_guard<std::mutex> lock(mtx);
 	auto it = method_options.find(method);
 	if (it != method_options.end()) {
 		curl_easy_setopt(session, (it->second), 1L);
@@ -85,7 +85,7 @@ std::string LCU_REQUEST::request(RequestMethod method, std::string path, std::st
 	std::string url = base_url + path + child_web;
 	CURLcode res;
 	std::string response;
-
+	std::lock_guard<std::mutex> lock(mtx);
 	// Set request options
 	auto it = method_options.find(method);
 	if (it != method_options.end()) {
@@ -125,7 +125,7 @@ std::string LCU_REQUEST::request(RequestMethod method, std::string path, std::st
 bool LCU_REQUEST::request(RequestMethod method, std::string path,  FILE* fp){
 	std::string url = base_url + path;
 	CURLcode res;
-
+	std::lock_guard<std::mutex> lock(mtx);
 	auto it = method_options.find(method);
 	if (it != method_options.end()) {
 		curl_easy_setopt(session, (it->second), 1L);

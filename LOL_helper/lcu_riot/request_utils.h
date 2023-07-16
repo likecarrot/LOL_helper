@@ -6,6 +6,7 @@
 #include <curl/curl.h>
 #include <map>
 #include    <functional>
+#include    <mutex>
 
 #pragma comment(lib, "libcurl.lib")   
 #pragma comment(lib, "wldap32.lib")   
@@ -44,6 +45,8 @@ public:
     std::string get_auth() { return auth_; };
     std::string get_port() { return port_; };
 private:
+    std::mutex mtx;//单线程
+
     LCU_REQUEST() {}
     ~LCU_REQUEST() {
         curl_easy_cleanup(session);

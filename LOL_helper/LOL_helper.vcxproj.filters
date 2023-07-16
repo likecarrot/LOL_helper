@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -16,19 +12,41 @@
     <Filter Include="riot_lcu">
       <UniqueIdentifier>{b87c2b62-f52c-4dac-9a2c-4abd23d2c728}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\items">
-      <UniqueIdentifier>{2d158cba-d150-46c6-8977-d46a89110e6f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="connect_my_service">
       <UniqueIdentifier>{b2e177b3-4732-4516-9864-e39b59b2d624}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="ui\ui_items">
+      <UniqueIdentifier>{2d158cba-d150-46c6-8977-d46a89110e6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="system">
+      <UniqueIdentifier>{5e4e01d5-0917-4ff3-9cbb-a54c88047567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\main_ui">
+      <UniqueIdentifier>{ddfd0f03-182b-45d3-ac7e-02a98c558093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\pop_ui">
+      <UniqueIdentifier>{c4549290-f249-427e-af06-f00759fae864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\ui_items\champion_items">
+      <UniqueIdentifier>{a5fc1f5b-d515-404e-998f-a30133410821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\ui_items\match_data_items">
+      <UniqueIdentifier>{0ed4df9c-fe0d-4e31-83af-1b67ec9db58f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="download_game_res">
+      <UniqueIdentifier>{ffccf163-4c97-4a75-81c2-e0ad6e91581e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thread">
+      <UniqueIdentifier>{63eafe83-7901-4dcd-b863-3baf38720f4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="basic_form.cpp">
-      <Filter>头文件</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>头文件</Filter>
+      <Filter>ui</Filter>
     </ClCompile>
     <ClCompile Include="lcu_riot\config.cpp">
       <Filter>riot_lcu</Filter>
@@ -45,19 +63,34 @@
     <ClCompile Include="lcu_riot\utils.cpp">
       <Filter>riot_lcu</Filter>
     </ClCompile>
-    <ClCompile Include="item.cpp">
-      <Filter>头文件\items</Filter>
-    </ClCompile>
     <ClCompile Include="dynamic_skin.cpp">
       <Filter>connect_my_service</Filter>
     </ClCompile>
+    <ClCompile Include="basic_form.cpp">
+      <Filter>ui\main_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="pop_form.cpp">
+      <Filter>ui\pop_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="item.cpp">
+      <Filter>ui\ui_items\champion_items</Filter>
+    </ClCompile>
+    <ClCompile Include="match_items.h">
+      <Filter>ui\ui_items\match_data_items</Filter>
+    </ClCompile>
+    <ClCompile Include="match_items.cpp">
+      <Filter>ui\ui_items\match_data_items</Filter>
+    </ClCompile>
+    <ClCompile Include="game_resource.cpp">
+      <Filter>download_game_res</Filter>
+    </ClCompile>
+    <ClCompile Include="MiscThread.cpp">
+      <Filter>thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basic_form.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="main.h">
-      <Filter>头文件</Filter>
+      <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="lcu_riot\config.h">
       <Filter>riot_lcu</Filter>
@@ -83,14 +116,29 @@
     <ClInclude Include="lcu_riot\utils.h">
       <Filter>riot_lcu</Filter>
     </ClInclude>
-    <ClInclude Include="item.h">
-      <Filter>头文件\items</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
+      <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="dynamic_skin.h">
       <Filter>connect_my_service</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.hpp">
+      <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_form.h">
+      <Filter>ui\main_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="pop_form.h">
+      <Filter>ui\pop_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="item.h">
+      <Filter>ui\ui_items\champion_items</Filter>
+    </ClInclude>
+    <ClInclude Include="game_resource.h">
+      <Filter>download_game_res</Filter>
+    </ClInclude>
+    <ClInclude Include="MiscThread.h">
+      <Filter>thread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

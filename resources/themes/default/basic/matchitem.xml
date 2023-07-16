@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="275,80">
+    <ListContainerElement class="listitem">
+        <VBox height="100" mouse="false" padding="5,5,5,5">
+            <HBox margin="0,3,0,0" mouse="false">
+                <Label name="team_player_name" singleline="true" halign="center" valign="center"
+                    normaltextcolor="red" />
+
+                <VBox>
+                    <Label text="本赛季:单双/灵活" normaltextcolor="blue" font="system_10" />
+                    <!-- <Label text="单双:" /> -->
+                    <Label name="team_player_rank_SOLO" normaltextcolor="blue" font="system_10" />
+                    <!-- <Label text="灵活:" /> -->
+                    <Label name="team_player_rank_FLEX" normaltextcolor="blue" font="system_10" />
+                </VBox>
+
+                <VBox>
+                    <Label text="上赛季:单双/灵活" font="system_10" />
+                    <Label name="team_player_rank_SOLO_last" font="system_10" />
+                    <Label name="team_player_rank_FLEX_last" font="system_10" />
+                </VBox>
+
+            </HBox>
+
+
+            <HBox margin="0,0,0,5" mouse="false">
+                <Label name="熟练度top:" />
+                <Control name="top1" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top2" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top3" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top4" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top5" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top6" halign="center" valign="center"
+                    bordercolor="gray" bordersize="2,2,2,2" />
+            </HBox>
+        </VBox>
+    </ListContainerElement>
+</Window>

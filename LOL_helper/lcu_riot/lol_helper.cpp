@@ -1,13 +1,6 @@
 ﻿#include	"lol_helper.h"
 #include <ShlObj.h>
 
-helper::helper()
-{
-}
-
-helper::~helper()
-{
-}
 
 void	helper::wait_game_start() {
 	std::string result;
@@ -109,41 +102,56 @@ std::string helper::GetProcessCommandLine(const std::string& cmdLine) {
 }
 
 bool	helper::init() {
-	summoner.clear();
 	LCU_REQUEST::setInstance(domain.auth_token, domain.port);
-	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
-	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, "/lol-summoner/v1/current-summoner");
 
+	OutputDebugStringA(domain.auth_token.c_str());
+	OutputDebugStringA("\n");
+	OutputDebugStringA(domain.port.c_str());
+	OutputDebugStringA("\n");
+
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, current_client_player_summoner_info_api);
+	if (response.length()<1)
+	{
+		return	false;
+	}
 	try {
-		summoner = parse_json<SUMMONER_INFO>(response);
-		std::wstring c = string2wstring(summoner.displayName);
-		std::cout << "游戏昵称:" << wstring_to_utf8(c) << '\n';
-		std::cout << "游戏等级:" << summoner.summonerLevel << '\n';
+		my_summoner = parse_json<SUMMONER_INFO>(response);
 	}
 	catch (const std::exception& e) {
 		return	false;
 	}
 	return	true;
 }
-
-bool	helper::get_Rank_level() {	//获取排位分数
-	rank_level.clear();
+SUMMONER_INFO helper::get_self_summoner_datas() {
+	SUMMONER_INFO	summoner;
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
-	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, "/lol-ranked/v1/ranked-stats/", this->summoner.puuid);
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, current_client_player_summoner_info_api);
+
+	try {
+		summoner = parse_json<SUMMONER_INFO>(response);
+	}
+	catch (const std::exception& e) {
+	}
+	return	summoner;
+}
+RANK_LEVEL helper::get_self_Rank_level() {	//获取排位分数
+	RANK_LEVEL	rank_level;
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, puuid_get_player_rank_data_api, this->my_summoner.puuid);
 	try {
 		rank_level = parse_json<RANK_LEVEL>(response);
 	}
 	catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
-		return	false;
 	}
-	return	true;
+	return	rank_level;
 }
 
 
 GAME_STATUS		helper::get_game_status() {
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
-	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, "/lol-gameflow/v1/gameflow-phase");
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, client_get_player_status_api);
 	auto	status = get_enum_gamestatus(response);
 #ifdef DEBUG
 	std::cout << "游戏状态: " << game_status_dict[static_cast<int>(status)][0] << std::endl;
@@ -152,7 +160,7 @@ GAME_STATUS		helper::get_game_status() {
 }
 void	helper::accept_game() {
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
-	std::string response = request.request(LCU_REQUEST::RequestMethod::POST_METHOD, "/lol-matchmaking/v1/ready-check/accept", "", "");
+	std::string response = request.request(LCU_REQUEST::RequestMethod::POST_METHOD, client_accept_matching_api, "", "");
 #ifdef DEBUG
 	std::cout << response << std::endl;
 #endif // DEBUG
@@ -175,10 +183,8 @@ void	helper::search_queue() {
 #endif // DEBUG
 }
 
-
-int	helper::get_owner_champions() {
-	std::lock_guard<std::mutex> lock(owner_champions_mutex);
-	owner_champions.clear();
+std::vector<CHAMPION> helper::get_owner_champions() {
+	std::vector<CHAMPION> ret_datas;
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, "/lol-champions/v1/owned-champions-minimal");
 	try
@@ -190,41 +196,18 @@ int	helper::get_owner_champions() {
 			ch.title = wstring2string(string2wstring(role["title"].get<std::string>()));
 			ch.freePlay = role["freeToPlay"].get<bool>();
 			ch.selectid = role["id"].get<int>();
-			owner_champions.push_back(ch);
+			ret_datas.push_back(ch);
 		}
 	}
 	catch (const std::exception&)
 	{
-		OutputDebugStringA("AAAA");
-		return 0;
 	}
-	return	owner_champions.size();
+	return	ret_datas;
 }	//获取已经拥有的英雄
 
-std::string	helper::download_icons(int	icon_id) {
-	//"https://127.0.0.1:51932/lol-game-data/assets/v1/profile-icons/1000.jpg";
-	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 
-	CHAR szPath[MAX_PATH] = { 0 };
-	SHGetSpecialFolderPathA(NULL, szPath, CSIDL_APPDATA, FALSE);
-	FILE* fp;
-
-	std::string	url2 = ("/lol-game-data/assets/v1/profile-icons/");
-	url2.append(std::to_string(icon_id) + ".jpg");
-
-	std::string	save_folder(szPath);
-	save_folder.append("\\icons.jpg");
-	
-
-	if (fopen_s(&fp, save_folder.c_str(), "wb") == 0)
-	{
-		bool ret = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, url2,fp);
-		fclose(fp);
-	}
-	return	save_folder;
-}
-int		helper::get_all_champions() {
-	all_champions.clear();
+std::vector<CHAMPION> helper::get_all_champions() {
+	std::vector<CHAMPION> ret_datas;
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, "/lol-game-data/assets/v1/champion-summary.json");
 	try
@@ -236,19 +219,18 @@ int		helper::get_all_champions() {
 			ch.name = wstring2string(string2wstring(role["name"].get<std::string>()));
 			if (ch.selectid > 0)
 			{
-				all_champions.push_back(ch);
+				ret_datas.push_back(ch);
 			}
 		}
 	}
 	catch (const std::exception&)
 	{
-		return	0;
 	}
-	return	all_champions.size();
+	return	ret_datas;
 }	//获取所有英雄
 void	helper::lock_champions(int	champion_id) {
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
-	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, "/lol-champ-select/v1/session");
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, matching_get_myteam_summonerinfo_api);
 	int	localPlayerCellId = 0;
 	try
 	{
@@ -271,4 +253,117 @@ void	helper::lock_champions(int	champion_id) {
 	catch (const std::exception&)
 	{
 	}
+}
+
+std::vector<TEAM_SUMMONER_INFO> helper::getChatRoomPlayerIdList()
+{
+	std::vector<TEAM_SUMMONER_INFO>	ret_datas;
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, matching_get_myteam_summonerinfo_api);
+	
+	
+	TEAM_SUMMONER_INFO	a;
+	a.summonerId = "4007627523";
+	a.puuid = "445a397a-5f8d-5a2c-b81c-0eeab67bad2f";
+	/*ret_datas.push_back(a);
+	ret_datas.push_back(a);
+	ret_datas.push_back(a);
+	ret_datas.push_back(a);
+	ret_datas.push_back(a);*/
+
+	try
+	{
+		ret_datas = parse_json<std::vector<TEAM_SUMMONER_INFO>>(response);
+	}
+	catch (const std::exception&)
+	{
+	}
+	return	ret_datas;
+}
+
+std::wstring helper::getDisplayName(std::string accountid)
+{
+	SUMMONER_INFO	ret_datas;
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, summonerid_get_summonerinfo_api, accountid);
+	int	localPlayerCellId = 0;
+	try
+	{
+		ret_datas = parse_json<SUMMONER_INFO>(response);
+	}
+	catch (const std::exception&)
+	{
+	}
+	return	string2wstring(ret_datas.displayName);
+}
+
+RANK_LEVEL helper::puuid_get_rank_datas(std::string puuid)
+{
+	RANK_LEVEL	ret_datas;
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, puuid_get_player_rank_data_api, puuid);
+	try
+	{
+		ret_datas = parse_json<RANK_LEVEL>(response);
+	}
+	catch (const std::exception&)
+	{
+	}
+	return ret_datas;
+}
+std::vector<PLAYER_HISTORY_MATCHDATA>	helper::getHistoryMatchDatas(std::string puuid, std::string accountid, int min, int max) {
+
+	std::string puuid_get_player_history_data_api1 = "/lol-match-history/v1/products/lol/" + puuid + "/matches?begIndex=" + std::to_string(min) + "&endIndex=" + std::to_string(max);
+	std::vector<PLAYER_HISTORY_MATCHDATA>	ret_datas;
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, puuid_get_player_history_data_api1);
+	try
+	{
+		json	j = json::parse(response);
+		if (j.at("games").at("games").is_array())
+		{
+			for (const auto& game : j["games"]["games"]) {
+				ret_datas.push_back(parse_json<PLAYER_HISTORY_MATCHDATA>(game));
+			}
+		}
+	}
+	catch (const std::exception&)
+	{
+	}
+	return	ret_datas;
+}
+MATCH_DETAILED_DATA helper::getGameNoticeInfo(std::string gameid)
+{
+	MATCH_DETAILED_DATA	ret_data;
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, gameid_get_detailed_data_api, gameid);
+	try
+	{
+		json	j = json::parse(response);
+		ret_data = parse_json<MATCH_DETAILED_DATA>(j);
+	}
+	catch (const std::exception&)
+	{
+	}
+	return ret_data;
+}
+
+std::vector<CHAMPION_TOP>	helper::get_top_champions(std::string	accountid, int limit) {
+	// /lol-collections/v1/inventories/4007627523/champion-mastery/top?limit=6
+	std::string	url = summonerid_get_top_champion_api + accountid + "/champion-mastery/top?limit=" + std::to_string(limit);
+	std::vector < CHAMPION_TOP>	ret_data;
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, url);
+	try
+	{
+		json	j = json::parse(response);
+		if (j.contains("masteries") && j.at("masteries").is_array()) {
+			for(int i=0;i<j.at("masteries").size();i++)
+				ret_data .push_back(parse_json<CHAMPION_TOP>(j.at("masteries")[i]));
+		}
+	}
+	catch (const std::exception&)
+	{
+	}
+	return ret_data;
 }
