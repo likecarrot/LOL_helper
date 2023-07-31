@@ -41,6 +41,10 @@ void MainThread::Init()
 	misc_thread_loop.reset(new MiscThread(kThreadGlobalLoopMisc, "Global Misc Loop Thread"));
 	misc_thread_loop->Start();
 
+	// 启动网络请求线程
+	network_thread_.reset(new MiscThread(kThreadNetwork, "Global network request Thread"));
+	network_thread_->Start();
+
 #ifdef USE_RESOURCE_FILE
 	// 获取资源路径，初始化全局参数
 	std::wstring theme_dir = getAppPath();
@@ -58,7 +62,6 @@ void MainThread::Init()
 	// 创建一个默认带有阴影的居中窗口
 	BasicForm* window = new BasicForm();
 	window->Create(NULL, L"自动接收助手", WS_OVERLAPPEDWINDOW &~WS_MAXIMIZEBOX, 0);
-	window->CenterWindow();
 	window->ShowWindow();
 }
 
@@ -72,6 +75,9 @@ void MainThread::Cleanup()
 	misc_thread_loop->Stop();
 	misc_thread_loop.reset(nullptr);
 	
+	network_thread_->Stop();
+	network_thread_.reset(nullptr);
+
 	SetThreadWasQuitProperly(true);
 	nbase::ThreadManager::UnregisterThread();
 }

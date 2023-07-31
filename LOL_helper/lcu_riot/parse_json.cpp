@@ -59,6 +59,7 @@ void	from_json(const json& j, std::vector<TEAM_SUMMONER_INFO>& a) {
 			TEAM_SUMMONER_INFO	info;
 			info.summonerId=std::to_string(teamMember["summonerId"].get<LONG64>());
 			info.puuid = teamMember["puuid"].get<std::string>();
+			info.participantId = a.size()+1;
 			a.push_back(info);
 		}
 	}
@@ -86,10 +87,36 @@ void from_json(const json& j, PLAYER_HISTORY_MATCHDATA& data)
 		data.gameCreation = j.at("gameCreation").get<unsigned	long long>();
 		data.gameDuration = j.at("gameDuration").get<unsigned	long long>();
 		data.gameId = std::to_string(j.at("gameId").get<unsigned	long long>());
+
+		auto gametype = j.at("gameType").get<std::string>();
 		auto gamemode = j.at("gameMode").get<std::string>();
-		data.gameMode = GAME_MODE.at(gamemode);
+		if (GAME_MODE.find(gamemode)!=GAME_MODE.cend())
+		{
+			data.gameMode = GAME_MODE.at(gamemode);
+		}else
+			data.gameMode = "未知模式";
+
+		if (GAME_TYPE.find(gametype) != GAME_TYPE.cend())
+		{
+			if (gametype==GAME_TYPE.at("CUSTOM_GAME"))
+			{
+				data.gameMode = "自定义";
+			}
+			if (gametype==GAME_TYPE.at("TUTORIAL_GAME"))
+			{
+				data.gameMode = "新手教程";
+			}
+		}
+		int queueId = j.at("queueId").get<int>();
+		if (queueId == 830)
+		{
+			data.gameMode = "人机赛";
+		}
+		
 
 		json arr = j["participants"][0];
+		data.summoner_id = std::to_string(j["participantIdentities"][0]["player"].at("summonerId").get<unsigned	long long>());
+
 		data.participants = parse_json<PARTICIPANTS>(arr);
 		if (data.gameMode._Equal(GAME_MODE.at("CLASSIC")))
 		{

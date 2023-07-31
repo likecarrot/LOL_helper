@@ -39,8 +39,18 @@ struct TEAM_SUMMONER_INFO
 static const std::map<std::string, std::string>   GAME_MODE = {
 	{"CLASSIC","经典模式"},
 	{"ARAM","极地大乱斗"},
-	{"CHERRY","斗魂竞技场"}
+	{"CHERRY","斗魂竞技场"},
+	{"TUTORIAL_MODULE_1","新手教程1"},
+	{"TUTORIAL_MODULE_2","新手教程2"},
+	{"TUTORIAL_MODULE_3","新手教程3"},
+	{"PRACTICETOOL","训练模式"}
 };
+static const std::map<std::string, std::string >GAME_TYPE = {
+	{"MATCHED_GAME","匹配模式"},
+	{"CUSTOM_GAME","自定义"},
+	{"TUTORIAL_GAME","游戏教程"}
+};
+
 struct PARTICIPANTS
 {
 	int	participantId;//所处的序号
@@ -60,8 +70,10 @@ struct PLAYER_HISTORY_MATCHDATA
 	unsigned	long long	gameDuration;//2067
 	std::string	gameId;
 	std::string	gameMode;
+	std::string gameType;
 	PARTICIPANTS participants;
 	bool	isRank = false;	//是排位赛吗
+	std::string summoner_id;	//用户id
 };
 struct BANS
 {

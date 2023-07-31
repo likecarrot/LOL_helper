@@ -52,6 +52,8 @@ public:
 	//对局助手相关
 	//bool	getEnvironment();//获取当前客户端所在大区
 	std::vector<TEAM_SUMMONER_INFO>	getChatRoomPlayerIdList();	//获取选人界面我队所有人的信息
+	std::string	getChatRoomId();	//获取选人界面的游戏房间id
+
 	std::wstring	getDisplayName(std::string accountid);
 	RANK_LEVEL	puuid_get_rank_datas(std::string puuid);//通过summoner_info获取段位信息
 	std::vector<PLAYER_HISTORY_MATCHDATA>	getHistoryMatchDatas(std::string puuid, std::string accountid, int min = 0, int max = 19);//通过summoner_info获取历史战绩
@@ -78,5 +80,7 @@ private:
 	const	std::string	summonerid_get_summonerinfo_api = "/lol-summoner/v1/summoners/";	//根据summonerid获取信息 + ${summonerId}
 	const	std::string	gameid_get_detailed_data_api = "/lol-match-history/v1/games/";	//根据gameid获取详细数据,+gameid
 	const	std::string	summonerid_get_top_champion_api = "/lol-collections/v1/inventories/";//+ ${summonerId} + /champion-mastery/top?limit=6
+	const   std::string	get_current_game_mode = "/lol-gameflow/v1/session";		//430 匹配 420 单双排位 440灵活 450 大乱斗 云顶匹配 1090  云顶排位 1100 云顶狂暴 1130 云顶双人作战 1160
+	const	std::string	get_select_champion_chatroomid_api = "/lol-chat/v1/conversations";//获取选人界面时,游戏房间id
 };
 

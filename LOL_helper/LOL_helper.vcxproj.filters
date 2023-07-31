@@ -28,9 +28,6 @@
     <Filter Include="ui\main_ui">
       <UniqueIdentifier>{ddfd0f03-182b-45d3-ac7e-02a98c558093}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ui\pop_ui">
-      <UniqueIdentifier>{c4549290-f249-427e-af06-f00759fae864}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ui\ui_items\champion_items">
       <UniqueIdentifier>{a5fc1f5b-d515-404e-998f-a30133410821}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,15 @@
     </Filter>
     <Filter Include="thread">
       <UniqueIdentifier>{63eafe83-7901-4dcd-b863-3baf38720f4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\helper_pop_ui">
+      <UniqueIdentifier>{c4549290-f249-427e-af06-f00759fae864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\helper_pop_ui\detail_datas_pop_ui">
+      <UniqueIdentifier>{1504ae14-7898-4ff1-99c1-29936e32a3dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\ui_items\details_items">
+      <UniqueIdentifier>{9a663eb9-1a62-46c0-ba9b-8c8036b1b919}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +76,7 @@
       <Filter>ui\main_ui</Filter>
     </ClCompile>
     <ClCompile Include="pop_form.cpp">
-      <Filter>ui\pop_ui</Filter>
+      <Filter>ui\helper_pop_ui</Filter>
     </ClCompile>
     <ClCompile Include="item.cpp">
       <Filter>ui\ui_items\champion_items</Filter>
@@ -86,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="MiscThread.cpp">
       <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="details_pop.cpp">
+      <Filter>ui\helper_pop_ui\detail_datas_pop_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="details_items_ui.cpp">
+      <Filter>ui\ui_items\details_items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -129,7 +141,7 @@
       <Filter>ui\main_ui</Filter>
     </ClInclude>
     <ClInclude Include="pop_form.h">
-      <Filter>ui\pop_ui</Filter>
+      <Filter>ui\helper_pop_ui</Filter>
     </ClInclude>
     <ClInclude Include="item.h">
       <Filter>ui\ui_items\champion_items</Filter>
@@ -139,6 +151,12 @@
     </ClInclude>
     <ClInclude Include="MiscThread.h">
       <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="details_pop.h">
+      <Filter>ui\helper_pop_ui\detail_datas_pop_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="details_items_ui.h">
+      <Filter>ui\ui_items\details_items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

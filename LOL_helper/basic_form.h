@@ -13,7 +13,7 @@
 #include	"game_resource.h"
 #include	"MiscThread.h"
 
-//#define	DYNAMIC_SKIN		//加入动态换肤
+#define	DYNAMIC_SKIN		//加入动态换肤
 #ifdef DYNAMIC_SKIN
 #include	"dynamic_skin.h"
 #endif // DYNAMIC_SKIN
@@ -125,15 +125,15 @@ private:
 	// 
 	//辅助函数
 	static std::wstring	add_str_status(std::wstring& content,bool status);
-	RANK_LEVEL_ITEM get(RANK_LEVEL& vec,std::string en)const ;
+	RANK_LEVEL_ITEM get(const RANK_LEVEL& vec,std::string en)const ;
 
 	bool	sort_champions_datas(ui::EventArgs* args);
 
 	void	Receive_Datas1(GAME_STATUS gamestatus);
-	void	Receive_Datas2(SUMMONER_INFO& info);
-	void	Receive_Datas3(RANK_LEVEL& rank_Datas);
-	void	Receive_Datas4(std::vector<CHAMPION>& owner_datas);
-
+	void	Receive_Datas2(SUMMONER_INFO info);
+	void	Receive_Datas3(RANK_LEVEL rank_Datas);
+	void	Receive_Datas4(std::vector<CHAMPION> owner_datas);
+	void	set_current_player_icon(std::string icon_path);
 
 #ifdef DYNAMIC_SKIN
 	//对动态皮肤新加入的处理

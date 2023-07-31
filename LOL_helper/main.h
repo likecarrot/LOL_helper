@@ -32,5 +32,6 @@ private:
 private:
 	std::unique_ptr<MiscThread>	misc_thread_;	// 专门处理杂事的线程
 	std::unique_ptr<MiscThread>	misc_thread_loop;	// 专门处理循环杂事的线程
+	std::unique_ptr<MiscThread>	network_thread_;	// 专门处理循环杂事的线程
 
 };

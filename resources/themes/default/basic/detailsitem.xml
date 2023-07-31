@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window>
+    <ListContainerElement class="listitem" height="60">
+        <HBox mouse="false" padding="5,5,5,5" childmargin="1" width="stretch">
+            <Control width="45" height="45" name="use_champ" halign="center" valign="center"
+                bordercolor="gray" bordersize="1,1,1,1" />
+            <VBox width="100" margin="5,0,0,0">
+                <Label name="game_mode" font="system_12" halign="left" />
+                <Label name="create_date" font="system_10" halign="left" />
+                <Label name="game_date" font="system_10" halign="left" />
+            </VBox>
+            <HBox childmargin="2">
+                <Label width="35" name="game_win" font="system_14" valign="center"
+                    halign="center" normaltextcolor="blue" />
+                <VBox width="170">
+                    <Label width="stretch" name="player_kda" halign="left" />
+                    <Label width="stretch" name="player_levelandgold_detailinfo" halign="left" />
+                    <Label width="stretch" name="player_dealtandvision_detailinfo" halign="left" />
+                </VBox>
+            </HBox>
+        </HBox>
+    </ListContainerElement>
+</Window>

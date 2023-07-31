@@ -156,6 +156,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basic_form.cpp" />
+    <ClCompile Include="details_items_ui.cpp" />
+    <ClCompile Include="details_pop.cpp" />
     <ClCompile Include="dynamic_skin.cpp" />
     <ClCompile Include="game_resource.cpp" />
     <ClCompile Include="item.cpp" />
@@ -172,6 +174,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basic_form.h" />
+    <ClInclude Include="details_items_ui.h" />
+    <ClInclude Include="details_pop.h" />
     <ClInclude Include="dynamic_skin.h" />
     <ClInclude Include="game_resource.h" />
     <ClInclude Include="item.h" />

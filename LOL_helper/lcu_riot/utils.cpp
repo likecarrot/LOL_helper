@@ -101,3 +101,24 @@ std::string wstring_to_utf8(const std::wstring& wstr) {
 	std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
 	return converter.to_bytes(wstr);
 }
+
+
+std::string timestamp2string(unsigned long long timestamp) {
+	// 将时间戳从毫秒转换为秒
+	auto timepoint = std::chrono::milliseconds(timestamp);
+	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(timepoint);
+
+	// 将时间戳转换为日期时间
+	auto datetime = std::chrono::system_clock::time_point(std::chrono::seconds(seconds.count()));
+	std::time_t time = std::chrono::system_clock::to_time_t(datetime);
+
+	// 使用 localtime_s 函数替代 localtime
+	std::tm timeStruct;
+	localtime_s(&timeStruct, &time);
+
+	// 格式化日期时间为字符串
+	std::stringstream ss;
+	ss << std::put_time(&timeStruct, "%Y-%m-%d %H:%M:%S");
+
+	return ss.str();
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window size="350,450" caption="0,0,0,35">
+  <VBox bkcolor="bk_wnd_darkcolor" name="main_box">
+    <HBox width="stretch" height="auto" bkcolor="bk_wnd_lightcolor">
+      <Control height="auto" width="auto" margin="4" valign="center" bkimage="logo_18x18.png" />
+      <Label margin="2,0,0,0" valign="center" font="system_14" name="window_title" />
+      <Control />
+      <Button class="btn_wnd_close" name="closebtn" margin="0,0,0,0" />
+    </HBox>
+
+
+    <HBox>
+      <Box width="350">
+        <VListBox class="list" name="list" />
+      </Box>
+      <!-- <VBox width="300" bkcolor="bk_wnd_darkcolor">
+        
+      </VBox> -->
+    </HBox>
+  </VBox>
+</Window>

@@ -262,18 +262,32 @@ std::vector<TEAM_SUMMONER_INFO> helper::getChatRoomPlayerIdList()
 	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, matching_get_myteam_summonerinfo_api);
 	
 	
-	TEAM_SUMMONER_INFO	a;
-	a.summonerId = "4007627523";
-	a.puuid = "445a397a-5f8d-5a2c-b81c-0eeab67bad2f";
-	/*ret_datas.push_back(a);
+	/*TEAM_SUMMONER_INFO	a,b,c,d,e;
+	a.summonerId = "4002122626";
+	a.puuid = "2c31a6de-7f2b-5f5a-bf0e-76961accdd6b";
+	a.participantId = 1;
+	b.summonerId = "3293614505124960";
+	b.puuid = "040ea6f6-8f4f-58a1-a4ca-b8d43f854dcb";
+	b.participantId = 2;
+	c.summonerId = "3288707299378848";
+	c.puuid = "4fe6cd8b-6740-5d68-ab48-50c4a2759d26";
+	c.participantId = 3;
+	d.summonerId = "3293269878400480";
+	d.puuid = "516f8db6-4e29-58a1-a12b-451ff20e1d34";
+	d.participantId = 4;
+	e.summonerId = "4007627523";
+	e.puuid = "445a397a-5f8d-5a2c-b81c-0eeab67bad2f";
+	e.participantId = 5;
 	ret_datas.push_back(a);
-	ret_datas.push_back(a);
-	ret_datas.push_back(a);
-	ret_datas.push_back(a);*/
+	ret_datas.push_back(b);
+	ret_datas.push_back(c);
+	ret_datas.push_back(d);
+	ret_datas.push_back(e);*/
 
 	try
 	{
 		ret_datas = parse_json<std::vector<TEAM_SUMMONER_INFO>>(response);
+		OutputDebugStringA(("matching_get_myteam_summonerinfo_api"+std::to_string(ret_datas.size())+"\n").c_str());
 	}
 	catch (const std::exception&)
 	{
@@ -281,6 +295,25 @@ std::vector<TEAM_SUMMONER_INFO> helper::getChatRoomPlayerIdList()
 	return	ret_datas;
 }
 
+std::string	helper::getChatRoomId() {
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, matching_get_myteam_summonerinfo_api);
+		// 查找 id 字段的起始位置
+		size_t idStart = response.find("\"id\":\"");
+		if (idStart == std::string::npos) {
+			std::cout << "id字段未找到" << std::endl;
+			return std::string();
+		}
+
+		// 截取 id 字段的值
+		size_t idValueStart = idStart + 6; // 跳过 "\"id\":\"" 的长度
+		size_t idValueEnd = response.find("\"", idValueStart);
+		if (idValueEnd == std::string::npos) {
+			return std::string();
+		}
+		std::string idValue = response.substr(idValueStart, idValueEnd - idValueStart);
+	return	idValue;
+}
 std::wstring helper::getDisplayName(std::string accountid)
 {
 	SUMMONER_INFO	ret_datas;

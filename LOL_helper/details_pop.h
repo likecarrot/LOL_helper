@@ -3,17 +3,13 @@
 #include	<duilib/UIlib.h>
 #include	"lcu_riot/struct.h"
 #include	"lcu_riot/lol_helper.h"
-#include	"match_items.h"
-#include	"MiscThread.h"
-#include	"item.h"
-#include	<Windows.h>
-#include	"details_pop.h"
+#include	"details_items_ui.h"
 
-class Pop_form : public ui::WindowImplBase
+class Details_Pop : public ui::WindowImplBase
 {
 public:
-	Pop_form() {};
-	~Pop_form() {};
+	Details_Pop();
+	~Details_Pop();
 
 	/**
 	 * 一下三个接口是必须要覆写的接口，父类会调用这三个接口来构建窗口
@@ -31,23 +27,28 @@ public:
 	virtual void InitWindow() override;
 	virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)override;
 
+
 	/**
 	 * 收到 WM_CLOSE 消息时该函数会被调用
 	 */
 	virtual LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	static const std::wstring kClassName;
-
-	void	Recv_info(std::vector<TEAM_SUMMONER_INFO> info);
-
-	//控件区
-	void	init_all_controls();
+	bool	details_isinvalid();
+	void	reset_info(int key);
+	void	init_info(std::vector<TEAM_SUMMONER_INFO> info);
 	bool	init_set_listen_controls(ui::EventArgs* args);
 private:
-	int		now_select_item_index = 0;
-	ui::ListBox* _list;
-	
-	std::vector<TEAM_SUMMONER_INFO> player_info;
-	Details_Pop* details_wind;
-	std::mutex	details_wind_mtx;
+	void	set_info_to_ui(TEAM_SUMMONER_INFO player);
+	void	Recv_datas1(std::vector<PLAYER_HISTORY_MATCHDATA>	datas);
+	void	add_items(int participantId);
 
+	int		now_show_player_participantId = 0;
+
+
+	std::vector<TEAM_SUMMONER_INFO>	info_;
+	std::map<int,std::vector<PLAYER_HISTORY_MATCHDATA>>	all_datas;//participantId --> 战绩
+
+	ui::Label* wind_title;
+	ui::ListBox* Vlist;
+	ui::VBox* main_box;
 };

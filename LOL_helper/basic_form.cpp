@@ -41,18 +41,19 @@ void BasicForm::InitWindow()
 				Sleep(5000);
 				continue;
 			}
-			nbase::ThreadManager::PostDelayedTask(kThreadMain, std::bind(&BasicForm::Receive_Datas2, this, helper::getInstance().get_self_summoner_datas()), nbase::TimeDelta::FromMilliseconds(1000));
-			nbase::ThreadManager::PostDelayedTask(kThreadMain, std::bind(&BasicForm::Receive_Datas3, this, helper::getInstance().get_self_Rank_level()), nbase::TimeDelta::FromMilliseconds(1000));
-			nbase::ThreadManager::PostDelayedTask(kThreadMain, std::bind(&BasicForm::Receive_Datas4, this, helper::getInstance().get_owner_champions()), nbase::TimeDelta::FromMilliseconds(1000));
+			//Global Misc Loop Thread
+			nbase::ThreadManager::PostDelayedTask(kThreadNetwork, std::bind(&BasicForm::Receive_Datas2, this, helper::getInstance().get_self_summoner_datas()), nbase::TimeDelta::FromMilliseconds(1000));
+			nbase::ThreadManager::PostDelayedTask(kThreadNetwork, std::bind(&BasicForm::Receive_Datas3, this, helper::getInstance().get_self_Rank_level()), nbase::TimeDelta::FromMilliseconds(1000));
+			nbase::ThreadManager::PostDelayedTask(kThreadNetwork, std::bind(&BasicForm::Receive_Datas4, this, helper::getInstance().get_owner_champions()), nbase::TimeDelta::FromMilliseconds(1000));
 			GAME_STATUS		game_Status = helper::getInstance().get_game_status();
 			while (game_Status != GAME_STATUS::Error) {
 				game_Status = helper::getInstance().get_game_status();
-				nbase::ThreadManager::PostTask(kThreadMain, nbase::Bind(&BasicForm::Receive_Datas1, this, game_Status));
 				Sleep(1000);
+				nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&BasicForm::Receive_Datas1, this, game_Status));
 			}
 		} while (true);
 	};
-	nbase::ThreadManager::PostTask(kThreadGlobalLoopMisc, ToWeakCallback(closure)); 
+	nbase::ThreadManager::PostTask(kThreadGlobalLoopMisc, ToWeakCallback(closure)); //MainThread
 }
 
 LRESULT BasicForm::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -143,13 +144,12 @@ void	BasicForm::init_all_controls() {
 
 	_ui_player_helper = dynamic_cast<ui::CheckBox*>(FindControl(L"matching_helper"));
 
+
 #ifdef DYNAMIC_SKIN
 	_download_R3nzdll = dynamic_cast<ui::Label*>(FindControl(L"_download_progress"));
 	_dynamic_skin = dynamic_cast<ui::CheckBox*>(FindControl(L"_dynamic_skin"));
-	nbase::ThreadManager::PostDelayedTask(kThreadMain, nbase::Bind(&BasicForm::Receive_check, this, dynamic_skin_host_my::check_Allow()), nbase::TimeDelta::FromSeconds(1));
+	nbase::ThreadManager::PostDelayedTask(kThreadNetwork, nbase::Bind(&BasicForm::Receive_check, this, dynamic_skin_host_my::check_Allow()), nbase::TimeDelta::FromSeconds(1));
 #endif // DYNAMIC_SKIN
-
-
 }
 
 void	BasicForm::init_set_listen_controls() {
@@ -197,8 +197,6 @@ void	BasicForm::init_set_listen_controls() {
 
 	_ui_close->AttachClick(std::bind(&BasicForm::OnUiMyClose, this, std::placeholders::_1));
 
-
-
 #ifdef DYNAMIC_SKIN
 	str = L"风险功能:动态换肤";
 	add_str_status(str, _dynamic_skin->IsSelected());
@@ -226,134 +224,159 @@ std::wstring	BasicForm::add_str_status(std::wstring& content, bool status) {
 
 
 void	BasicForm::Receive_Datas1(GAME_STATUS gamestatus) {
-	switch (gamestatus)
-	{
-	case GAME_STATUS::Error:
-		display_game_status->SetText(L"等待游戏启动中");
-		break;
-	case GAME_STATUS::None:
-		display_game_status->SetText(L"游戏大厅");
-		if (ui_datas._ui_player_help && tools_windows != NULL)
+	StdClosure	closure = [this, gamestatus]() {
+		switch (gamestatus)
 		{
-			tools_windows->Close();
-			tools_windows = NULL;
+		case GAME_STATUS::Error:
+			display_game_status->SetText(L"等待游戏启动中");
+			if (ui_datas._ui_player_help && tools_windows != NULL)
+			{
+				tools_windows->Close();
+				tools_windows = NULL;
+			}
+			break;
+		case GAME_STATUS::None:
+			display_game_status->SetText(L"游戏大厅");
+			if (ui_datas._ui_player_help && tools_windows != NULL)
+			{
+				tools_windows->Close();
+				tools_windows = NULL;
+			}
+			break;
+		case GAME_STATUS::Lobby:
+			display_game_status->SetText(L"房间内");
+			if (ui_datas._ui_searchqueue_status == true && tools_windows == NULL)
+				helper::getInstance().search_queue();
+			if (ui_datas._ui_player_help && tools_windows != NULL)
+			{
+				tools_windows->Close();
+				tools_windows = NULL;
+			}
+			break;
+		case GAME_STATUS::Matchmaking:
+			display_game_status->SetText(L"匹配中");
+			if (ui_datas._ui_player_help && tools_windows != NULL)
+			{
+				tools_windows->Close();
+				tools_windows = NULL;
+			}
+			break;
+		case GAME_STATUS::ReadyCheck:
+			display_game_status->SetText(L"找到对局");
+			if (ui_datas._ui_accept_status == true)
+				helper::getInstance().accept_game();
+			break;
+		case GAME_STATUS::ChampSelect:
+			display_game_status->SetText(L"选英雄中");
+			if (ui_datas._ui_lockchampion_status && ui_datas._ui_champion_id != 0)
+				helper::getInstance().lock_champions(ui_datas._ui_champion_id);
+			if (ui_datas._ui_player_help)
+			{
+				open_player_helper_tools();
+			}
+			break;
+		case GAME_STATUS::InProgress:
+			display_game_status->SetText(L"游戏中");
+			if (ui_datas._ui_player_help && tools_windows != NULL)
+			{
+				tools_windows->Close();
+				tools_windows = NULL;
+			}
+			break;
+		case GAME_STATUS::PreEndOfGame:
+			display_game_status->SetText(L"游戏即将结束");
+			break;
+		case GAME_STATUS::WaitingForStats:
+			display_game_status->SetText(L"等待结算页面");
+			break;
+		case GAME_STATUS::EndOfGame:
+			display_game_status->SetText(L"游戏结束");
+			if (ui_datas._ui_nextgame_status == true)
+				helper::getInstance().auto_next_game();
+			break;
+		case GAME_STATUS::Reconnect:
+			display_game_status->SetText(L"等待重新连接");
+			break;
+		default:
+			break;
 		}
-		break;
-	case GAME_STATUS::Lobby:
-		display_game_status->SetText(L"房间内");
-		if (ui_datas._ui_searchqueue_status == true&& tools_windows==NULL)
-			helper::getInstance().search_queue();
-		if (ui_datas._ui_player_help && tools_windows != NULL)
-		{
-			tools_windows->Close();
-			tools_windows = NULL;
-		}
-		break;
-	case GAME_STATUS::Matchmaking:
-		display_game_status->SetText(L"匹配中");
-		if (ui_datas._ui_player_help && tools_windows != NULL)
-		{
-			tools_windows->Close();
-			tools_windows = NULL;
-		}
-		break;
-	case GAME_STATUS::ReadyCheck:
-		display_game_status->SetText(L"找到对局");
-		if (ui_datas._ui_accept_status == true)
-			helper::getInstance().accept_game();
-		break;
-	case GAME_STATUS::ChampSelect:
-		display_game_status->SetText(L"选英雄中");
-		if (ui_datas._ui_lockchampion_status && ui_datas._ui_champion_id != 0)
-			helper::getInstance().lock_champions(ui_datas._ui_champion_id);
-		if (ui_datas._ui_player_help)
-		{
-			open_player_helper_tools();
-		}
-		break;
-	case GAME_STATUS::InProgress:
-		display_game_status->SetText(L"游戏中");
-		if (ui_datas._ui_player_help&&tools_windows!=NULL)
-		{
-			tools_windows->Close();
-			tools_windows = NULL;
-		}
-		break;
-	case GAME_STATUS::PreEndOfGame:
-		display_game_status->SetText(L"游戏即将结束");
-		break;
-	case GAME_STATUS::WaitingForStats:
-		display_game_status->SetText(L"等待结算页面");
-		break;
-	case GAME_STATUS::EndOfGame:
-		display_game_status->SetText(L"游戏结束");
-		if (ui_datas._ui_nextgame_status == true)
-			helper::getInstance().auto_next_game();
-		break;
-	case GAME_STATUS::Reconnect:
-		display_game_status->SetText(L"等待重新连接");
-		break;
-	default:
-		break;
-	}
+	};
+	nbase::ThreadManager::PostTask(kThreadMain, ToWeakCallback(closure));//Global network request Thread
 }
 
-void	BasicForm::Receive_Datas2(SUMMONER_INFO& info) {
-	_ui_player_name->SetText(string2wstring(info.displayName));
-	_ui_player_level->SetText(std::to_wstring(info.summonerLevel));
-	summoner_icon->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::ICONS, info.profileIconId)));
+void	BasicForm::Receive_Datas2(SUMMONER_INFO info) {
+	StdClosure	closure = [this, info]() {
+		_ui_player_name->SetText(string2wstring(info.displayName));
+		_ui_player_level->SetText(std::to_wstring(info.summonerLevel));
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&BasicForm::set_current_player_icon,this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::ICONS, info.profileIconId)));;//Global network request Thread
+	};
+	nbase::ThreadManager::PostTask(kThreadMain, ToWeakCallback(closure));//Global network request Thread
 }
 
-void	BasicForm::Receive_Datas3(RANK_LEVEL& rank_Datas) {
-	auto	SOLO_5x5 = get(rank_Datas, "RANKED_SOLO_5x5");
-	if (!SOLO_5x5.tier.empty()) {
-		std::wstring	n = StringToWString(SOLO_5x5.tier) + L" " + StringToWString(SOLO_5x5.division) + L" " + std::to_wstring(SOLO_5x5.leaguePoints);
-		_ui_RANKED_SOLO_5x5->SetText(n);
-	}
-	auto	FLEX_SR = get(rank_Datas, "RANKED_FLEX_SR");
-	if (!FLEX_SR.tier.empty()) {
-		std::wstring	n = StringToWString(FLEX_SR.tier) + L" " + StringToWString(FLEX_SR.division) + L" " + std::to_wstring(FLEX_SR.leaguePoints);
-		_ui_RANKED_FLEX_SR->SetText(n);
-	}
-	auto	TFT = get(rank_Datas, "RANKED_TFT");
-	if (!TFT.tier.empty()) {
-		std::wstring	n = StringToWString(TFT.tier) + L" " + StringToWString(TFT.division) + L" " + std::to_wstring(TFT.leaguePoints);
-		_ui_RANKED_TFT->SetText(n);
-	}
-	auto	TFT_TURBO = get(rank_Datas, "RANKED_TFT_TURBO");
-	if (!TFT_TURBO.tier.empty()) {
-		std::wstring	n = StringToWString(TFT_TURBO.tier) + L" " + StringToWString(TFT_TURBO.division) + L" " + std::to_wstring(TFT_TURBO.leaguePoints);
-		_ui_RANKED_TFT_TURBO->SetText(n);
-	}
-	auto	TFT_DOUBLE_UP = get(rank_Datas, "RANKED_TFT_DOUBLE_UP");
-	if (!TFT_DOUBLE_UP.tier.empty()) {
-		std::wstring	n = StringToWString(TFT_DOUBLE_UP.tier) + L" " + StringToWString(TFT_DOUBLE_UP.division) + L" " + std::to_wstring(TFT_DOUBLE_UP.leaguePoints);
-		_ui_RANKED_SOLO_5x5->SetText(n);
-	}
-
+void	BasicForm::Receive_Datas3(RANK_LEVEL rank_Datas) {
+	StdClosure	closure = [this, rank_Datas]() {
+		auto	SOLO_5x5 = get(rank_Datas, "RANKED_SOLO_5x5");
+		if (!SOLO_5x5.tier.empty()) {
+			std::wstring	n = StringToWString(SOLO_5x5.tier) + L" " + StringToWString(SOLO_5x5.division) + L" " + std::to_wstring(SOLO_5x5.leaguePoints);
+			_ui_RANKED_SOLO_5x5->SetText(n);
+		}
+		auto	FLEX_SR = get(rank_Datas, "RANKED_FLEX_SR");
+		if (!FLEX_SR.tier.empty()) {
+			std::wstring	n = StringToWString(FLEX_SR.tier) + L" " + StringToWString(FLEX_SR.division) + L" " + std::to_wstring(FLEX_SR.leaguePoints);
+			_ui_RANKED_FLEX_SR->SetText(n);
+		}
+		auto	TFT = get(rank_Datas, "RANKED_TFT");
+		if (!TFT.tier.empty()) {
+			std::wstring	n = StringToWString(TFT.tier) + L" " + StringToWString(TFT.division) + L" " + std::to_wstring(TFT.leaguePoints);
+			_ui_RANKED_TFT->SetText(n);
+		}
+		auto	TFT_TURBO = get(rank_Datas, "RANKED_TFT_TURBO");
+		if (!TFT_TURBO.tier.empty()) {
+			std::wstring	n = StringToWString(TFT_TURBO.tier) + L" " + StringToWString(TFT_TURBO.division) + L" " + std::to_wstring(TFT_TURBO.leaguePoints);
+			_ui_RANKED_TFT_TURBO->SetText(n);
+		}
+		auto	TFT_DOUBLE_UP = get(rank_Datas, "RANKED_TFT_DOUBLE_UP");
+		if (!TFT_DOUBLE_UP.tier.empty()) {
+			std::wstring	n = StringToWString(TFT_DOUBLE_UP.tier) + L" " + StringToWString(TFT_DOUBLE_UP.division) + L" " + std::to_wstring(TFT_DOUBLE_UP.leaguePoints);
+			_ui_RANKED_SOLO_5x5->SetText(n);
+		}
+	};
+	nbase::ThreadManager::PostTask(kThreadMain, ToWeakCallback(closure));//Global network request Thread
 }
 
-void	BasicForm::Receive_Datas4(std::vector<CHAMPION>& owner_datas) {
-	_champion_list->RemoveAll();
-	have_champions_copy.clear();
+void	BasicForm::Receive_Datas4(std::vector<CHAMPION> owner_datas) {
+	StdClosure	closure = [this,owner_datas]() {
+		_champion_list->RemoveAll();
+		have_champions_copy.clear();
 
-	if (owner_datas.size() == 0) {
-		Item* item = new Item;
-		ui::GlobalManager::FillBoxWithCache(item, L"basic/item.xml");
-		std::wstring title = L"没有拥有任何英雄";
-		item->InitSubControls(title);
-		_champion_list->Add(item);
-	}
-	have_champions_copy = owner_datas;
-	for (const auto& i : have_champions_copy)
-	{
-		Item* item = new Item;
-		ui::GlobalManager::FillBoxWithCache(item, L"basic/item.xml");
-		std::wstring title = StringToWString(i.name) + L"-" + StringToWString(i.title);
-		item->InitSubControls(title);
-		item->AttachDoubleClick(nbase::Bind(&BasicForm::OnSelectedChampion, this, std::placeholders::_1));
-		_champion_list->Add(item);
-	}
+		if (owner_datas.size() == 0) {
+			Item* item = new Item;
+			ui::GlobalManager::FillBoxWithCache(item, L"basic/item.xml");
+			std::wstring title = L"没有拥有任何英雄";
+			item->InitSubControls(title);
+			_champion_list->Add(item);
+		}
+		else {
+			have_champions_copy = owner_datas;
+			for (const auto& i : have_champions_copy)
+			{
+				Item* item = new Item;
+				ui::GlobalManager::FillBoxWithCache(item, L"basic/item.xml");
+				std::wstring title = StringToWString(i.name) + L"-" + StringToWString(i.title);
+				item->InitSubControls(title);
+				item->AttachDoubleClick(nbase::Bind(&BasicForm::OnSelectedChampion, this, std::placeholders::_1));
+				_champion_list->Add(item);
+			}
+		}
+	};
+	nbase::ThreadManager::PostTask(kThreadMain, ToWeakCallback(closure));//Global network request Thread
+}
+
+void	BasicForm::set_current_player_icon(std::string icon_path) {
+	StdClosure	closure = [this, icon_path]() {
+		summoner_icon->SetBkImage(string2wstring(icon_path));
+	};
+	nbase::ThreadManager::PostTask(kThreadMain, ToWeakCallback(closure));//Global network request Thread
 }
 
 #ifdef DYNAMIC_SKIN
@@ -369,7 +392,7 @@ void	BasicForm::Receive_check(bool	check) {
 		_dynamic_skin->SetText(str);
 		_dynamic_skin->AttachSelect(std::bind(&BasicForm::Open_dynamic_skin, this, std::placeholders::_1));
 		_dynamic_skin->AttachUnSelect(std::bind(&BasicForm::Open_dynamic_skin, this, std::placeholders::_1));
-		nbase::ThreadManager::PostDelayedTask(kThreadMain, nbase::Bind(&BasicForm::Receive_download_dll_path, this, dynamic_skin_host_my::download_dll()), nbase::TimeDelta::FromSeconds(1));
+		nbase::ThreadManager::PostDelayedTask(kThreadNetwork, nbase::Bind(&BasicForm::Receive_download_dll_path, this, dynamic_skin_host_my::download_dll()), nbase::TimeDelta::FromSeconds(1));
 	}//风险功能:动态换肤
 }
 
@@ -419,7 +442,7 @@ void	BasicForm::Receive_download_dll_path(std::string	save_path) {
 #endif // DYNAMIC_SKIN
 
 
-RANK_LEVEL_ITEM BasicForm::get(RANK_LEVEL& vec, std::string en)const
+RANK_LEVEL_ITEM BasicForm::get(const RANK_LEVEL& vec, std::string en)const
 {
 	RANK_LEVEL_ITEM	b;
 	for (const auto it : vec) {
@@ -481,7 +504,7 @@ LRESULT BasicForm::OnTrayIcon(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL bHan
 	//如果在图标中单击左键则还原
 	if (lParam == WM_LBUTTONDOWN)
 	{
-		nbase::ThreadManager::PostDelayedTask(0, [this]() {
+		nbase::ThreadManager::PostDelayedTask(kThreadMain, [this]() {//MainThread
 			this->ActiveWindow();
 			::SetForegroundWindow(m_hWnd);
 			::BringWindowToTop(m_hWnd);
@@ -536,6 +559,7 @@ void	BasicForm::open_player_helper_tools() {
 		tools_windows->Create(this->GetHWND(), NULL, WS_EX_OVERLAPPEDWINDOW & ~WS_EX_APPWINDOW, 0);
 		tools_windows->ShowModalFake(this->GetHWND(),true);
 		tools_windows->ShowWindow();
+		tools_windows->ToTopMost(true);
 		// 获取窗口位置信息
 		HWND hwnd = FindWindowA(NULL, "League of Legends");
 		RECT rect;

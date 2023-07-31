@@ -1,6 +1,5 @@
 #include "match_items.h"
 #include "lcu_riot/utils.h"
-
 void Match_Items::InitSubControls(MATCH_ITEMS::NEED_DATAS player_info)
 {
 	_info = player_info;

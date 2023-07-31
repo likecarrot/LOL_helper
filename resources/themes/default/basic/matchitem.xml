@@ -4,17 +4,16 @@
         <VBox height="100" mouse="false" padding="5,5,5,5">
             <HBox margin="0,3,0,0" mouse="false">
                 <Label name="team_player_name" singleline="true" halign="center" valign="center"
+                    width="100"
                     normaltextcolor="red" />
 
-                <VBox>
+                <VBox width="85">
                     <Label text="本赛季:单双/灵活" normaltextcolor="blue" font="system_10" />
-                    <!-- <Label text="单双:" /> -->
                     <Label name="team_player_rank_SOLO" normaltextcolor="blue" font="system_10" />
-                    <!-- <Label text="灵活:" /> -->
                     <Label name="team_player_rank_FLEX" normaltextcolor="blue" font="system_10" />
                 </VBox>
 
-                <VBox>
+                <VBox width="85">
                     <Label text="上赛季:单双/灵活" font="system_10" />
                     <Label name="team_player_rank_SOLO_last" font="system_10" />
                     <Label name="team_player_rank_FLEX_last" font="system_10" />
