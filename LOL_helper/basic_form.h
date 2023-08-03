@@ -3,15 +3,15 @@
 #include	<duilib/UIlib.h>
 #include	"lcu_riot/struct.h"
 #include	"lcu_riot/lol_helper.h"
-#include	"lcu_riot/utils.h"
+#include	"utils.h"
 #include	"item.h"
 #include	<Windows.h>
 #include	<shellapi.h>
 #include	"resource.h"
-#include	"utils.hpp"
 #include	"pop_form.h"
 #include	"game_resource.h"
 #include	"MiscThread.h"
+#include	"lcu_riot/config.h"
 
 #define	DYNAMIC_SKIN		//加入动态换肤
 #ifdef DYNAMIC_SKIN
@@ -31,7 +31,8 @@ struct _UI_STATUS
 	bool	_ui_searchqueue_status = false;
 	bool	_ui_lockchampion_status = false;
 	int		_ui_champion_id = 0;
-	bool	_ui_player_help = true;
+	bool	_ui_marching_helper = true;
+	bool	_ui_aram_helper=true;
 };
 
 class BasicForm : public ui::WindowImplBase
@@ -69,11 +70,12 @@ public:
 	void	init_all_controls();
 	void	init_set_listen_controls();
 
-	ui::CheckBox* _ui_accept;		//复选框
+	ui::CheckBox* _ui_accept;		//复选框 
 	ui::CheckBox* _ui_nextgame;
 	ui::CheckBox* _ui_searchqueue;
 	ui::CheckBox* _ui_lockchampion;
-	ui::CheckBox* _ui_player_helper;//对局助手
+	ui::CheckBox* _ui_player_helper;//战绩助手
+	ui::CheckBox* _ui_aram_helper;//大乱斗助手
 	ui::Label* _ui_selectchampion;	//用户双击后提示目前所需要拿的英雄,仅作显示用
 	ui::VBox* tools_area;		//功能区域的容器
 	ui::Control* summoner_icon;	//用户头像
@@ -100,13 +102,17 @@ public:
 
 	ui::Button* _ui_close;
 private:
+	//使用的线程
+	std::mutex	ui_still_alive_lock;
+	bool	still_alive = false;
+	std::unique_ptr<MiscThread>	loop_getgameuipos_thread_;	//循环获取LOL的界面位置线程
+	//这个结构用来标识功能的ui的选择状态
+	_UI_STATUS	ui_datas;
+	
 
 	// 自定义消息的ID
 	UINT myMessage = RegisterWindowMessage(L"ONLY_ONE");
 
-
-	//我所需要的结构和数据
-	_UI_STATUS	ui_datas;
 
 	Pop_form* tools_windows;//lol助手窗口
 
@@ -133,6 +139,8 @@ private:
 	void	Receive_Datas2(SUMMONER_INFO info);
 	void	Receive_Datas3(RANK_LEVEL rank_Datas);
 	void	Receive_Datas4(std::vector<CHAMPION> owner_datas);
+
+
 	void	set_current_player_icon(std::string icon_path);
 
 #ifdef DYNAMIC_SKIN

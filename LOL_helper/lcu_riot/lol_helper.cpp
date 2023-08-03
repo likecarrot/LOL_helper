@@ -2,31 +2,25 @@
 #include <ShlObj.h>
 
 
-void	helper::wait_game_start() {
-	std::string result;
-	while (result.find("token") == std::string::npos) {
-		result = GetProcessCommandLine("wmic process where caption='LeagueClientUx.exe' get commandline");
-		if (result.find("token") == std::string::npos) {
-			Sleep(2000);
-			continue;
-		}
+void	helper::set_game_commandline(std::string commandline) {
+
 		// 截取auth_token
-		size_t auth_token_pos = result.find("--remoting-auth-token=");
+		size_t auth_token_pos = commandline.find("--remoting-auth-token=");
 		if (auth_token_pos != std::string::npos) {
 			auth_token_pos += strlen("--remoting-auth-token=");
-			size_t auth_token_end = result.find("\"", auth_token_pos);
+			size_t auth_token_end = commandline.find("\"", auth_token_pos);
 			if (auth_token_end != std::string::npos) {
-				domain.auth_token = result.substr(auth_token_pos, auth_token_end - auth_token_pos);
+				domain.auth_token = commandline.substr(auth_token_pos, auth_token_end - auth_token_pos);
 			}
 		}
 
 		// 截取port
-		size_t port_pos = result.find("--app-port=");
+		size_t port_pos = commandline.find("--app-port=");
 		if (port_pos != std::string::npos) {
 			port_pos += strlen("--app-port=");
-			size_t port_end = result.find("\"", port_pos);
+			size_t port_end = commandline.find("\"", port_pos);
 			if (port_end != std::string::npos) {
-				domain.port = result.substr(port_pos, port_end - port_pos);
+				domain.port = commandline.substr(port_pos, port_end - port_pos);
 			}
 		}
 
@@ -36,70 +30,8 @@ void	helper::wait_game_start() {
 		std::cout << domain.auth_token << std::endl;
 		std::cout << "-----------" << std::endl;
 #endif // DEBUG
-	}
 }
 
-std::string helper::GetProcessCommandLine(const std::string& cmdLine) {
-	/* 创建匿名管道 */
-	SECURITY_ATTRIBUTES _security = { 0 };
-	_security.bInheritHandle = TRUE;
-	_security.nLength = sizeof(_security);
-	_security.lpSecurityDescriptor = NULL;
-	HANDLE hRead = NULL, hWrite = NULL;
-	if (!CreatePipe(&hRead, &hWrite, &_security, 0)) {
-		printf("创建管道失败,error code=%d \n", GetLastError());
-	}
-	/* cmd命令行转换为Unicode编码 */
-	int convLength = MultiByteToWideChar(CP_UTF8, 0, cmdLine.c_str(), (int)strlen(cmdLine.c_str()), NULL, 0);
-	if (convLength <= 0) {
-		printf("字符串转换长度计算出错\n");
-	}
-	std::wstring wCmdLine;
-	wCmdLine.resize(convLength + 10);
-	convLength = MultiByteToWideChar(CP_UTF8, 0, cmdLine.c_str(), (int)strlen(cmdLine.c_str()), &wCmdLine[0], (int)wCmdLine.size());
-	if (convLength <= 0) {
-		printf("字符串转换出错\n");
-	}
-	/* 创建新进程执行cmd命令并将结果写入到管道 */
-	PROCESS_INFORMATION pi = { 0 };
-	STARTUPINFO si = { 0 };
-	si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-	si.wShowWindow = SW_HIDE; // 隐藏cmd执行的窗口
-	si.hStdError = hWrite;
-	si.hStdOutput = hWrite;
-	if (!CreateProcess(NULL,
-		&wCmdLine[0],
-		NULL,
-		NULL,
-		TRUE,
-		0,
-		NULL,
-		NULL,
-		&si,
-		&pi)) {
-		printf("创建子进程失败,error code=%d \n", GetLastError());
-	}
-	/* 等待进程执行命令结束 */
-	::WaitForSingleObject(pi.hThread, INFINITE);
-	::WaitForSingleObject(pi.hProcess, INFINITE);
-	/* 从管道中读取数据 */
-	DWORD bufferLen = 10240;
-	char* buffer = (char*)malloc(10240);
-	memset(buffer, '\0', bufferLen);
-	DWORD recLen = 0;
-	if (!ReadFile(hRead, buffer, bufferLen, &recLen, NULL)) {
-		printf("读取管道内容失败, error code=%d\n", GetLastError());
-	}
-	std::string ret(buffer);
-	/* 关闭句柄 */
-	CloseHandle(hRead);
-	CloseHandle(hWrite);
-	CloseHandle(pi.hProcess);
-	CloseHandle(pi.hThread);
-
-	free(buffer);
-	return ret;
-}
 
 bool	helper::init() {
 	LCU_REQUEST::setInstance(domain.auth_token, domain.port);
@@ -263,13 +195,13 @@ std::vector<TEAM_SUMMONER_INFO> helper::getChatRoomPlayerIdList()
 	
 	
 	/*TEAM_SUMMONER_INFO	a,b,c,d,e;
-	a.summonerId = "4002122626";
-	a.puuid = "2c31a6de-7f2b-5f5a-bf0e-76961accdd6b";
+	a.summonerId = "4007627523";
+	a.puuid = "445a397a-5f8d-5a2c-b81c-0eeab67bad2f";
 	a.participantId = 1;
-	b.summonerId = "3293614505124960";
-	b.puuid = "040ea6f6-8f4f-58a1-a4ca-b8d43f854dcb";
-	b.participantId = 2;
-	c.summonerId = "3288707299378848";
+	b.summonerId = "2952329458";
+	b.puuid = "a1bf4773-1eba-53fa-99f2-3c41d559f583";
+	b.participantId = 2;*/
+	/*c.summonerId = "3288707299378848";
 	c.puuid = "4fe6cd8b-6740-5d68-ab48-50c4a2759d26";
 	c.participantId = 3;
 	d.summonerId = "3293269878400480";
@@ -277,12 +209,12 @@ std::vector<TEAM_SUMMONER_INFO> helper::getChatRoomPlayerIdList()
 	d.participantId = 4;
 	e.summonerId = "4007627523";
 	e.puuid = "445a397a-5f8d-5a2c-b81c-0eeab67bad2f";
-	e.participantId = 5;
-	ret_datas.push_back(a);
-	ret_datas.push_back(b);
-	ret_datas.push_back(c);
-	ret_datas.push_back(d);
-	ret_datas.push_back(e);*/
+	e.participantId = 5;*/
+	/*ret_datas.push_back(a);
+	ret_datas.push_back(b);*/
+	//ret_datas.push_back(c);
+	//ret_datas.push_back(d);
+	//ret_datas.push_back(e);
 
 	try
 	{

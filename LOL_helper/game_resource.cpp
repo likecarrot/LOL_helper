@@ -6,14 +6,7 @@ const std::string pre_champion_icons = "champion_icons_";
 
 GAME_RESOURCES::GAME_RES::GAME_RES()
 {
-	CHAR szPath[MAX_PATH] = { 0 };
-	SHGetSpecialFolderPathA(NULL, szPath, CSIDL_APPDATA, FALSE);
-	AppdataFolder = szPath;
-	MyFolder = AppdataFolder + "\\lol_helper";
-
-	if (!folderExists(MyFolder)) {
-		::CreateDirectoryA(MyFolder.c_str(), NULL);
-	}
+	IconsFolder = get_app_path("icons");
 }
 
 GAME_RESOURCES::GAME_RES::~GAME_RES()
@@ -28,7 +21,7 @@ std::string	GAME_RESOURCES::GAME_RES::getIconsPath(DOWN_TYPE type, int id) {
 		id = 29;
 	}
 
-	std::string	save_folder = MyFolder + "\\";
+	std::string	save_folder = IconsFolder + "\\";
 	std::string	file_name = std::to_string(id);
 
 	switch (type)
@@ -96,11 +89,5 @@ bool	GAME_RESOURCES::GAME_RES::download(DOWN_TYPE type, std::string child_url, s
 		return	true;
 	}
 	return	false;
-}
-
-
-bool GAME_RESOURCES::GAME_RES::folderExists(const std::string& folderPath) {
-	DWORD fileAttributes = ::GetFileAttributesA(folderPath.c_str());
-	return (fileAttributes != INVALID_FILE_ATTRIBUTES && (fileAttributes & FILE_ATTRIBUTE_DIRECTORY));
 }
 

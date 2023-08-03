@@ -155,29 +155,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Aram_helper.cpp" />
     <ClCompile Include="basic_form.cpp" />
     <ClCompile Include="details_items_ui.cpp" />
     <ClCompile Include="details_pop.cpp" />
     <ClCompile Include="dynamic_skin.cpp" />
     <ClCompile Include="game_resource.cpp" />
+    <ClCompile Include="global_.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="lcu_riot\config.cpp" />
     <ClCompile Include="lcu_riot\lol_helper.cpp" />
     <ClCompile Include="lcu_riot\parse_json.cpp" />
     <ClCompile Include="lcu_riot\request_utils.cpp" />
-    <ClCompile Include="lcu_riot\utils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="match_items.cpp" />
     <ClCompile Include="match_items.h" />
     <ClCompile Include="MiscThread.cpp" />
     <ClCompile Include="pop_form.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Aram_Helper.h" />
     <ClInclude Include="basic_form.h" />
     <ClInclude Include="details_items_ui.h" />
     <ClInclude Include="details_pop.h" />
     <ClInclude Include="dynamic_skin.h" />
+    <ClInclude Include="GameItemsConstants.h" />
     <ClInclude Include="game_resource.h" />
+    <ClInclude Include="global_.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="lcu_riot\config.h" />
     <ClInclude Include="lcu_riot\json.hpp" />
@@ -186,12 +191,11 @@
     <ClInclude Include="lcu_riot\public_status.h" />
     <ClInclude Include="lcu_riot\request_utils.h" />
     <ClInclude Include="lcu_riot\struct.h" />
-    <ClInclude Include="lcu_riot\utils.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MiscThread.h" />
     <ClInclude Include="pop_form.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="D:\download\NIM_Duilib_Framework-1.0.0\base\base.vcxproj">
@@ -210,6 +214,7 @@
   <ItemGroup>
     <None Include="..\..\..\..\desktop\wokrn\musedash修改器\resoucrs.bin" />
     <None Include="..\resources.zip" />
+    <None Include="factory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

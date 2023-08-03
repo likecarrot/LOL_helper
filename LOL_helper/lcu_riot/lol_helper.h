@@ -4,15 +4,26 @@
 #include	"struct.h"
 #include	"request_utils.h"
 #include	<regex>
-#include	"utils.h"
+#include	"../utils.h"
 #include	"parse_json.h"
 #include	<vector>
 #include	<TlHelp32.h>
 #include	<mutex>
 #include	"..\game_resource.h"
+#include	"../Aram_Helper.h"
 
 //#define	DEBUG
 
+class All_Champions_Dict
+{
+public:
+	All_Champions_Dict() {};
+	All_Champions_Dict(std::vector<CHAMPION> champion) :_champ_list(champion) {};
+	std::string	champid_get_champname(int champ_id);
+	int	champname_get_champid(std::string champ_name);
+private:
+	std::vector<CHAMPION>	_champ_list;
+};
 
 class helper
 {
@@ -29,7 +40,7 @@ private:
 	~helper() {};
 
 public:
-	void	wait_game_start();
+	void	set_game_commandline(std::string commandline);
 	bool	init();	//获取当前客户端账号的信息,用这个接口来测试是否成功连接
 
 
@@ -49,7 +60,7 @@ public:
 	std::vector<CHAMPION_TOP>	get_top_champions(std::string	accountid, int limit);
 
 
-	//对局助手相关
+	//战绩助手相关
 	//bool	getEnvironment();//获取当前客户端所在大区
 	std::vector<TEAM_SUMMONER_INFO>	getChatRoomPlayerIdList();	//获取选人界面我队所有人的信息
 	std::string	getChatRoomId();	//获取选人界面的游戏房间id
@@ -59,11 +70,15 @@ public:
 	std::vector<PLAYER_HISTORY_MATCHDATA>	getHistoryMatchDatas(std::string puuid, std::string accountid, int min = 0, int max = 19);//通过summoner_info获取历史战绩
 	MATCH_DETAILED_DATA	getGameNoticeInfo(std::string	gameid);//通过gameid获取具体详细数据
 
+	//大乱斗助手相关
+	bool	IsAramMatch();	//是大乱斗模式吗? 判断标准是 "allowRerolling": false, 如果是true就是大乱斗 
+	void	ReRoll();		//使用骰子
+	std::vector<CHAMPION>	GetBachChampList();	//获取所有备战席的英雄
 
-
-
-	static std::string GetProcessCommandLine(const std::string& cmdLine);
 private:
+
+	All_Champions_Dict	All_Champ;//所有英雄
+
 	DOMAIN_INFO	domain;
 	GAME_STATUS	game_status;	//现在游戏的状态
 	SUMMONER_INFO	my_summoner;
@@ -83,4 +98,5 @@ private:
 	const   std::string	get_current_game_mode = "/lol-gameflow/v1/session";		//430 匹配 420 单双排位 440灵活 450 大乱斗 云顶匹配 1090  云顶排位 1100 云顶狂暴 1130 云顶双人作战 1160
 	const	std::string	get_select_champion_chatroomid_api = "/lol-chat/v1/conversations";//获取选人界面时,游戏房间id
 };
+
 

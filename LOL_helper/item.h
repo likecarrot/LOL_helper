@@ -6,7 +6,7 @@ class Item : public ui::ListContainerElement
 {
 public:
 	Item();
-	~Item();
+	~Item();;
 
 	// 提供外部调用来初始化 item 数据
 	void InitSubControls(const std::wstring& title);

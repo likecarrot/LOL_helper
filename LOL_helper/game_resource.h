@@ -1,10 +1,11 @@
 #pragma	once
 #include	<curl/curl.h>
 #include	<string>
-#include "shlobj.h" 
 #include <fstream>
 #include	"lcu_riot/request_utils.h"
 #include	"lcu_riot/json.hpp"
+#include	"utils.h"
+
 //这个类用来保存和下载游戏文件
 //比如 头像,英雄预览
 //首先初始化,用来获取一个文件夹appdata下,然后新建目录
@@ -33,13 +34,8 @@ namespace GAME_RESOURCES
 	private:
 		GAME_RES();
 		~GAME_RES();
-		static bool folderExists(const std::string& folderPath);
 		bool	download(DOWN_TYPE type, std::string child_url, std::string save_name);
-
-
 	private:
-		std::string	AppdataFolder;
-		std::string	MyFolder;
+		std::string	IconsFolder;
 	};
-
 }

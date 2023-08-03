@@ -2,7 +2,6 @@
 
 const std::wstring Pop_form::kClassName = L"basic";
 
-
 std::wstring Pop_form::GetSkinFolder()
 {
 	return L"basic";
@@ -32,6 +31,23 @@ LRESULT Pop_form::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 
 void Pop_form::Recv_info(std::vector<TEAM_SUMMONER_INFO> info)
 {
+	/*
+	size="275,500"
+	*/
+
+	nbase::ThreadManager::PostTask(kThreadMain, [this, info] {
+		HWND hwnd = FindWindowA(NULL, "League of Legends");
+		RECT rect;
+		GetWindowRect(hwnd, &rect);
+		ui::UiRect	pos;
+		pos.top = rect.top;
+		pos.left = rect.right;
+		pos.right = 290 + pos.left;
+		pos.bottom = 100 * info.size() + pos.top;
+		this->SetPos(pos, true, SWP_SHOWWINDOW, HWND_TOP, false);
+		});
+
+	
 	for (auto& i : info)
 	{
 		std::string out = i.puuid + "    " + i.summonerId +"    " + std::to_string(i.participantId)+"  \n";
@@ -69,6 +85,11 @@ void Pop_form::Recv_info(std::vector<TEAM_SUMMONER_INFO> info)
 	}
 	_list->AttachBubbledEvent(ui::kEventAll, nbase::Bind(&Pop_form::init_set_listen_controls, this, std::placeholders::_1));
 	player_info = info;
+}
+
+void Pop_form::Recv_PosInfo(ui::UiRect pos)
+{
+	this->SetPos(pos, false, SWP_NOSIZE, HWND_TOP, false);
 }
 
 LRESULT Pop_form::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {

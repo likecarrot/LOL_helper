@@ -2,9 +2,17 @@
 
 using   json = nlohmann::json;
 
-bool exist_configfile() {
+CONFIG_FILES::CONFIG_FILES()
+{
+}
+
+CONFIG_FILES::~CONFIG_FILES()
+{
+}
+
+bool	CONFIG_FILES::check_exist_config_file(std::string	input_path) {
 	FILE* file;
-	if (fopen_s(&file, config_file_path.c_str(), "r") == 0) {
+	if (fopen_s(&file, input_path.c_str(), "r") == 0) {
 		fclose(file);
 		return true;
 	}
@@ -13,63 +21,70 @@ bool exist_configfile() {
 	}
 }
 
-void	save_default_config() {
-	json json_data = {
-	  {"自动接收对局", true},
-	  {"自动再来一局", true},
-	  {"?什么是自动再来一局", "游戏结束后再来一局,但是并不会自动开始匹配"},
-	  {"自动匹配下一把", false},
-	  {"?什么自动匹配下一把", "与上面不同的是只有开启了自动再来一局才可以使用自动匹配下一把功能"},
-	  {"安静输出", true},
-		{"自动锁定英雄",false},
-		{"lock_champion_id",0}
-	};
-	std::ofstream file(config_file_path);
+void	CONFIG_FILES::save_default_config() {
+	CONFIG_	new_config;
+	std::ofstream file(default_config_file_path);
 	if (!file.is_open()) {
-		std::cerr << "Failed to create file: " << config_file_path << std::endl;
+		std::cerr << "Failed to create file: " << default_config_file_path << std::endl;
 		return;
 	}
 	try
 	{
-		file << std::setw(4) << json_data << std::endl;
+		file << std::setw(4) << new_config.output_config() << std::endl;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "e.what   " << e.what() << std::endl;
 		file.close();
 	}
-	std::cout << "输出配置文件在运行目录下:文件名 " << config_file_path << std::endl;
 }
-void	load_config(CONFIG_FILES& configs) {
-	CONFIG_FILES    config;
-	if (exist_configfile() == false)
+bool	CONFIG_FILES::load_config_file(std::string	input_path) {
+	if (input_path.empty())
 	{
-		save_default_config();
+		input_path = default_config_file_path;
 	}
-	if (exist_configfile() == true)
+	if (check_exist_config_file(input_path) == true)
 	{
-		std::ifstream file(config_file_path);
+		std::ifstream file(input_path);
 		if (!file.is_open()) {
-			std::cerr << "Failed to open file: " << config_file_path << std::endl;
-			return;
+			std::cerr << "Failed to open file: " << input_path << std::endl;
+			return	false;
 		}
 
 		json jsonData;
 		try {
-			file >> jsonData;
+			jsonData = json::parse(file);
+			configs.load_configs(jsonData, configs);
 		}
 		catch (const json::parse_error& e) {
-			std::cerr << "Failed to parse JSON from file: " << config_file_path << std::endl;
+			std::cerr << "Failed to parse JSON from file: " << input_path << std::endl;
 			std::cerr << "Error message: " << e.what() << std::endl;
-			return;
+			return	false;
 		}
-		if (!jsonData.contains("自动接收对局") || !jsonData.contains("自动再来一局") || !jsonData.contains("自动匹配下一把") || !jsonData.contains("安静输出") || !jsonData.contains("自动锁定英雄") || !jsonData.contains("lock_champion_id"))
-			return;
-		configs._auto_accept = jsonData["自动接收对局"].get<bool>();
-		configs._auto_next = jsonData["自动再来一局"].get<bool>();
-		configs._search_queue = jsonData["自动匹配下一把"].get<bool>();
-		configs._quiet_output = jsonData["安静输出"].get<bool>();
-		configs._lock_champion = jsonData["自动锁定英雄"].get<bool>();
-		configs._lock_champion_id = jsonData["lock_champion_id"].get<int>();
+		return	true;
 	}
+	return	false;
 }
+bool	CONFIG_FILES::save_current_config(std::string	output_path) {
+	if (output_path.empty())
+	{
+		output_path = default_config_file_path;
+	}
+	std::ofstream file(output_path);
+	if (!file.is_open()) {
+		std::cerr << "Failed to create file: " << output_path << std::endl;
+		return	false;
+	}
+	try
+	{
+		file << configs.output_config() << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		file.close();
+		return	false;
+	}
+	file.close();
+	return	true;
+}
+

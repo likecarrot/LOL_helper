@@ -27,19 +27,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 void MainThread::Init()
 {
-
-	//check_only();
+	check_only();
 
 	nbase::ThreadManager::RegisterThread(kThreadMain);
 
 
-	// 启动杂事处理线程
-	misc_thread_.reset(new MiscThread(kThreadGlobalMisc, "Global Misc Thread"));
-	misc_thread_->Start();
-
-	// 启动杂事处理线程
-	misc_thread_loop.reset(new MiscThread(kThreadGlobalLoopMisc, "Global Misc Loop Thread"));
-	misc_thread_loop->Start();
+	loop_getgamestatus_thread_.reset(new MiscThread(kThreadLoopGetGameStatusThread, "Global Misc Loop Thread"));
+	loop_getgamestatus_thread_->Start();
 
 	// 启动网络请求线程
 	network_thread_.reset(new MiscThread(kThreadNetwork, "Global network request Thread"));
@@ -69,11 +63,8 @@ void MainThread::Cleanup()
 {
 	ui::GlobalManager::Shutdown();
 
-	misc_thread_->Stop();
-	misc_thread_.reset(nullptr);
-
-	misc_thread_loop->Stop();
-	misc_thread_loop.reset(nullptr);
+	loop_getgamestatus_thread_->Stop();
+	loop_getgamestatus_thread_.reset(nullptr);
 	
 	network_thread_->Stop();
 	network_thread_.reset(nullptr);
@@ -82,11 +73,6 @@ void MainThread::Cleanup()
 	nbase::ThreadManager::UnregisterThread();
 }
 void	MainThread::check_only() {
-	//容易被杀毒软件误报,所以采用其他方法
-	//// 创建一个命名的互斥体
-	//HANDLE hMutex = CreateMutex(NULL, TRUE, L"874678DC-29FB-4CA1-8E8E-A3D478F03CAF");
-
-	//创建一个管道
 	HANDLE hPipe = CreateNamedPipe(
 		L"\\\\.\\pipe\\{6799FB87-574B-4382-AF2A-19AE027B68CD}",  // 命名管道的名称
 		PIPE_ACCESS_DUPLEX,          // 管道的访问模式

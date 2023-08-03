@@ -30,8 +30,6 @@ private:
 	void	check_only();
 
 private:
-	std::unique_ptr<MiscThread>	misc_thread_;	// 专门处理杂事的线程
-	std::unique_ptr<MiscThread>	misc_thread_loop;	// 专门处理循环杂事的线程
-	std::unique_ptr<MiscThread>	network_thread_;	// 专门处理循环杂事的线程
-
+	std::unique_ptr<MiscThread>	loop_getgamestatus_thread_;	//循环获取游戏状态的线程
+	std::unique_ptr<MiscThread>	network_thread_;	// 负责网络请求的线程
 };

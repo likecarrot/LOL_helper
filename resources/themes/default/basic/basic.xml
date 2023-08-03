@@ -21,9 +21,10 @@
             margin="0,10,0,0" />
           <CheckBox text="自动锁定英雄" name="_ui_lockchampion" selected="false" selectedtextcolor="red"
             margin="0,10,0,0" />
-          <CheckBox text="对局助手" name="matching_helper" selected="true" selectedtextcolor="red"
+          <CheckBox text="战绩助手" name="matching_helper" selected="true" selectedtextcolor="red"
             margin="0,10,0,0" />
-
+          <CheckBox text="大乱斗助手" name="aram_helper" selected="true" selectedtextcolor="red"
+            margin="0,10,0,0" />
           <Label text="目前预选英雄" name="_ui_champion" width="110" endellipsis="false"
             normaltextcolor="black" margin="0,10,0,0" />
           <Box bordersize="1" bordercolor="splitline_level1" width="110" height="25"

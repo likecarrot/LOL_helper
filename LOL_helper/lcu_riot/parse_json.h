@@ -1,8 +1,8 @@
 ﻿#pragma	once
 #include	"json.hpp"
 #include    "struct.h"
-#include    "utils.h"
-
+#include    "../utils.h"
+#include	"../GameItemsConstants.h"
 
 
 using json = nlohmann::json;
@@ -28,7 +28,6 @@ T parse_json(const json& j) {
 	return result;
 }
 
-std::string convert_rank_tocn(std::string en);
 
 void from_json(const json& j, SUMMONER_INFO& a);
 void from_json(const json& j, RANK_LEVEL& a);

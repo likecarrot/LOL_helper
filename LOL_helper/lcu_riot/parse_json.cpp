@@ -1,18 +1,6 @@
 ﻿#include	"parse_json.h"
 
 
-std::string convert_rank_tocn(std::string en) {
-	std::string	ret;
-	if (rank_tiers_dict.count(en) > 0)
-	{
-		return	rank_tiers_dict.at(en);
-	}
-	//if (tft_rank_tiers.count(en)>0)
-	//{
-	//	return	tft_rank_tiers.at(en);
-	//}
-	return	"";
-}
 void from_json(const json& j, SUMMONER_INFO& a) {
 	try {
 		j.at("profileIconId").get_to(a.profileIconId);
@@ -36,9 +24,11 @@ void from_json(const json& j, RANK_LEVEL& a) {
 			RANK_LEVEL_ITEM	items;
 
 			j.at("queueMap").at(value).at("division").get_to(items.division);
-			items.tier = convert_rank_tocn(j.at("queueMap").at((value)).at("tier"));
+			items.tier = F_rank_tiers.GetSecond(j.at("queueMap").at((value)).at("tier"));
+
 			j.at("queueMap").at(value).at("leaguePoints").get_to(items.leaguePoints);
-			items.previousEndTier = convert_rank_tocn(j.at("queueMap").at(value).at("previousSeasonEndTier"));
+			items.previousEndTier = F_rank_tiers.GetSecond(j.at("queueMap").at(value).at("previousSeasonEndTier"));
+
 			j.at("queueMap").at(value).at("previousSeasonEndDivision").get_to(items.previousEndDivision);
 			items.en = it->first;
 			items.cn = it->second;

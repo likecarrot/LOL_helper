@@ -2,7 +2,7 @@
 #include	<base/base.h>
 #include	<duilib/UIlib.h>
 #include	"lcu_riot/struct.h"
-#include "lcu_riot/utils.h"
+#include	"utils.h"
 #include	"game_resource.h"
 
 

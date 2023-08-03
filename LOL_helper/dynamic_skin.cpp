@@ -1,6 +1,5 @@
 #include	"dynamic_skin.h"
 
-
 bool dynamic_skin_host_my::check_Allow()
 {
 	CURL* curl;
@@ -90,7 +89,7 @@ std::string	dynamic_skin_host_my::download_dll() {
 
 
 std::string	dynamic_skin_host_my::get_lol_game_path() {
-	std::string result = helper::GetProcessCommandLine("wmic process where caption='LeagueClientUx.exe' get commandline");
+	std::string result = GetProcessCommandLine("wmic process where caption='LeagueClientUx.exe' get commandline");
 	if (result.empty())
 	{
 		return	"";

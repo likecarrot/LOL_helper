@@ -49,6 +49,9 @@
     <Filter Include="ui\ui_items\details_items">
       <UniqueIdentifier>{9a663eb9-1a62-46c0-ba9b-8c8036b1b919}</UniqueIdentifier>
     </Filter>
+    <Filter Include="riot_lcu\aram_helper">
+      <UniqueIdentifier>{89dfba82-aee1-4abc-99c1-f7700fc9b249}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -64,9 +67,6 @@
       <Filter>riot_lcu</Filter>
     </ClCompile>
     <ClCompile Include="lcu_riot\request_utils.cpp">
-      <Filter>riot_lcu</Filter>
-    </ClCompile>
-    <ClCompile Include="lcu_riot\utils.cpp">
       <Filter>riot_lcu</Filter>
     </ClCompile>
     <ClCompile Include="dynamic_skin.cpp">
@@ -99,6 +99,15 @@
     <ClCompile Include="details_items_ui.cpp">
       <Filter>ui\ui_items\details_items</Filter>
     </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
+    <ClCompile Include="Aram_helper.cpp">
+      <Filter>riot_lcu\aram_helper</Filter>
+    </ClCompile>
+    <ClCompile Include="global_.cpp">
+      <Filter>system</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -125,16 +134,13 @@
     <ClInclude Include="lcu_riot\struct.h">
       <Filter>riot_lcu</Filter>
     </ClInclude>
-    <ClInclude Include="lcu_riot\utils.h">
-      <Filter>riot_lcu</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>ui</Filter>
     </ClInclude>
     <ClInclude Include="dynamic_skin.h">
       <Filter>connect_my_service</Filter>
     </ClInclude>
-    <ClInclude Include="utils.hpp">
+    <ClInclude Include="utils.h">
       <Filter>system</Filter>
     </ClInclude>
     <ClInclude Include="basic_form.h">
@@ -158,6 +164,15 @@
     <ClInclude Include="details_items_ui.h">
       <Filter>ui\ui_items\details_items</Filter>
     </ClInclude>
+    <ClInclude Include="GameItemsConstants.h">
+      <Filter>riot_lcu</Filter>
+    </ClInclude>
+    <ClInclude Include="Aram_Helper.h">
+      <Filter>riot_lcu\aram_helper</Filter>
+    </ClInclude>
+    <ClInclude Include="global_.h">
+      <Filter>system</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LOL_helper.rc">
@@ -174,5 +189,8 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="..\resources.zip" />
+    <None Include="factory.h">
+      <Filter>riot_lcu</Filter>
+    </None>
   </ItemGroup>
 </Project>
