@@ -21,7 +21,7 @@ void Pop_form::InitWindow()
 {
 	_list = dynamic_cast<ui::ListBox*>(FindControl(L"list"));
 	//_list->AttachBubbledEvent(ui::kEventKeyUp, nbase::Bind(&Pop_form::init_set_listen_controls, this, std::placeholders::_1));
-	nbase::ThreadManager::PostTask(kThreadNetwork, std::bind(&Pop_form::Recv_info, this, helper::getInstance().getChatRoomPlayerIdList()));
+	nbase::ThreadManager::PostTask(kThreadNetwork, std::bind(&Pop_form::Recv_info, this, raw_lcu_api::getInstance().get_lol_champ_select_v1_session()));
 }
 
 LRESULT Pop_form::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -29,7 +29,7 @@ LRESULT Pop_form::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandle
 	return __super::OnClose(uMsg, wParam, lParam, bHandled);
 }
 
-void Pop_form::Recv_info(std::vector<TEAM_SUMMONER_INFO> info)
+void Pop_form::Recv_info(LCU_JSON_RESPONSE::LolChampSelect info)
 {
 	/*
 	size="275,500"
@@ -43,37 +43,36 @@ void Pop_form::Recv_info(std::vector<TEAM_SUMMONER_INFO> info)
 		pos.top = rect.top;
 		pos.left = rect.right;
 		pos.right = 290 + pos.left;
-		pos.bottom = 100 * info.size() + pos.top;
+		pos.bottom = 100 * info.my_team.size() + pos.top;
 		this->SetPos(pos, true, SWP_SHOWWINDOW, HWND_TOP, false);
 		});
 
 	
-	for (auto& i : info)
+	for (auto& i : info.my_team)
 	{
-		std::string out = i.puuid + "    " + i.summonerId +"    " + std::to_string(i.participantId)+"  \n";
+		std::string out = i.puuid + "    " + std::to_string(i.summoner_id) +"    " + std::to_string(i.cell_id)+"  \n";
 		OutputDebugStringA(out.c_str());
 
 		MATCH_ITEMS::NEED_DATAS	need;
-		need.player_name = helper::getInstance().getDisplayName(i.summonerId);
-		need.rank_datas = helper::getInstance().puuid_get_rank_datas(i.puuid);
-		i.displayName = need.player_name;
-		auto top_ = helper::getInstance().get_top_champions(i.summonerId, 6);
-		if (top_.size() < 6)
+		need.player_name = string2wstring(raw_lcu_api::getInstance().get_summoner_datas(std::to_string(i.summoner_id)).display_name);
+		need.rank_datas = raw_lcu_api::getInstance().puuid_get_rank_datas(i.puuid);
+		auto top_ = raw_lcu_api::getInstance().get_top_champions(std::to_string(i.summoner_id), 6);
+		if (top_.masteries.size() < 6)
 		{
-			for (int i = top_.size(); i < 6; i++) {
-				CHAMPION_TOP	t;
-				t.championId = 0;
-				top_.push_back(t);
+			for (int i = top_.masteries.size(); i < 6; i++) {
+				LCU_JSON_RESPONSE::Mastery	t;
+				t.champion_id = 0;
+				top_.masteries.push_back(t);
 			}
 		}
 
 		{
-			need.top1 = top_.at(0).championId;
-			need.top2 = top_.at(1).championId;
-			need.top3 = top_.at(2).championId;
-			need.top4 = top_.at(3).championId;
-			need.top5 = top_.at(4).championId;
-			need.top6 = top_.at(5).championId;
+			need.top1 = top_.masteries.at(0).champion_id;
+			need.top2 = top_.masteries.at(1).champion_id;
+			need.top3 = top_.masteries.at(2).champion_id;
+			need.top4 = top_.masteries.at(3).champion_id;
+			need.top5 = top_.masteries.at(4).champion_id;
+			need.top6 = top_.masteries.at(5).champion_id;
 		}
 
 		nbase::ThreadManager::PostTask(kThreadMain, [this, need] {

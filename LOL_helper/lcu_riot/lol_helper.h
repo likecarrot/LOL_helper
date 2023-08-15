@@ -1,49 +1,31 @@
 ﻿#pragma	once
 #include	<Windows.h>
 #include	<string>
-#include	"struct.h"
 #include	"request_utils.h"
 #include	<regex>
 #include	"../utils.h"
-#include	"parse_json.h"
 #include	<vector>
 #include	<TlHelp32.h>
 #include	<mutex>
 #include	"..\game_resource.h"
-#include	"../Aram_Helper.h"
+#include	"../lcu_structs.hpp"
+#include	"struct.h"
 
-//#define	DEBUG
-
-class All_Champions_Dict
+class raw_lcu_api
 {
 public:
-	All_Champions_Dict() {};
-	All_Champions_Dict(std::vector<CHAMPION> champion) :_champ_list(champion) {};
-	std::string	champid_get_champname(int champ_id);
-	int	champname_get_champid(std::string champ_name);
-private:
-	std::vector<CHAMPION>	_champ_list;
-};
+	raw_lcu_api(const raw_lcu_api&) = delete;
+	raw_lcu_api& operator=(const raw_lcu_api&) = delete;
 
-class helper
-{
-public:
-	helper(const helper&) = delete;
-	helper& operator=(const helper&) = delete;
-
-	static helper& getInstance() {
-		static helper instance;
+	static raw_lcu_api& getInstance() {
+		static raw_lcu_api instance;
 		return instance;
 	}
 private:
-	helper() {};
-	~helper() {};
+	raw_lcu_api() {};
+	~raw_lcu_api() {};
 
 public:
-	void	set_game_commandline(std::string commandline);
-	bool	init();	//获取当前客户端账号的信息,用这个接口来测试是否成功连接
-
-
 
 	GAME_STATUS	get_game_status();
 	void	accept_game();
@@ -52,51 +34,54 @@ public:
 	void	lock_champions(int	champion_id);		//锁定选择英雄
 
 
-	std::vector<CHAMPION> get_owner_champions();	//获取已经拥有的英雄
-	std::vector<CHAMPION> get_all_champions();	//获取所有英雄
-	SUMMONER_INFO get_self_summoner_datas();
-	RANK_LEVEL get_self_Rank_level();
 
-	std::vector<CHAMPION_TOP>	get_top_champions(std::string	accountid, int limit);
+	void	set_game_commandline(std::string commandline);
+	bool	init();	//获取当前客户端账号的信息,用这个接口来测试是否成功连接
 
+	//2023-8-16重构
+	//发现很多请求类,都做的操作太少,返回了一个json数据,只用其中一部分
+	//在此之前都是面对功能的网络请求,之后开始面对网络请求
+	LCU_JSON_RESPONSE::LolChampSelect	get_lol_champ_select_v1_session();
+	LCU_JSON_RESPONSE::LolOwnerChampions get_owner_champions();	//获取已经拥有的英雄
+	LCU_JSON_RESPONSE::LolGameDataChampSummary get_all_champions();	//获取所有英雄
+	LCU_JSON_RESPONSE::LolSummonerInfo get_summoner_datas();
+	LCU_JSON_RESPONSE::LolSummonerInfo get_summoner_datas(std::string summoner_id);
+	LCU_JSON_RESPONSE::LolRankedData	puuid_get_rank_datas(std::string puuid="");//通过summoner_id获取个人信息
 
-	//战绩助手相关
-	//bool	getEnvironment();//获取当前客户端所在大区
-	std::vector<TEAM_SUMMONER_INFO>	getChatRoomPlayerIdList();	//获取选人界面我队所有人的信息
-	std::string	getChatRoomId();	//获取选人界面的游戏房间id
-
-	std::wstring	getDisplayName(std::string accountid);
-	RANK_LEVEL	puuid_get_rank_datas(std::string puuid);//通过summoner_info获取段位信息
-	std::vector<PLAYER_HISTORY_MATCHDATA>	getHistoryMatchDatas(std::string puuid, std::string accountid, int min = 0, int max = 19);//通过summoner_info获取历史战绩
-	MATCH_DETAILED_DATA	getGameNoticeInfo(std::string	gameid);//通过gameid获取具体详细数据
-
-	//大乱斗助手相关
-	bool	IsAramMatch();	//是大乱斗模式吗? 判断标准是 "allowRerolling": false, 如果是true就是大乱斗 
+	LCU_JSON_RESPONSE::LolMatchHistory	getHistoryMatchDatas(std::string puuid, std::string accountid, int min = 0, int max = 19);//通过summoner_info获取历史战绩
+	LCU_JSON_RESPONSE::LolCollections	get_top_champions(std::string	accountid, int limit);
+	LCU_JSON_RESPONSE::LolGameflow	get_current_game_mode();	//是大乱斗模式吗? 判断标准是 "allowRerolling": false, 如果是true就是大乱斗 
 	void	ReRoll();		//使用骰子
-	std::vector<CHAMPION>	GetBachChampList();	//获取所有备战席的英雄
+
 
 private:
-
-	All_Champions_Dict	All_Champ;//所有英雄
-
 	DOMAIN_INFO	domain;
-	GAME_STATUS	game_status;	//现在游戏的状态
-	SUMMONER_INFO	my_summoner;
-
-	std::vector<CHAMPION>	owner_champions;		//id , 英雄结构
-	std::vector<CHAMPION>	all_champions;
-
+	LCU_JSON_RESPONSE::LolSummonerInfo	my_summoner;
 
 	const	std::string	current_client_player_summoner_info_api = "/lol-summoner/v1/current-summoner";		//获取现在客户端上登录的玩家的信息
 	const	std::string	puuid_get_player_rank_data_api = "/lol-ranked/v1/ranked-stats/";			//通过puuid获取段位信息
 	const	std::string	client_get_player_status_api = "/lol-gameflow/v1/gameflow-phase";			//获取客户端状态,比如 游戏中,大厅中
 	const	std::string	client_accept_matching_api = "/lol-matchmaking/v1/ready-check/accept";		//接收对局
 	const	std::string	matching_get_myteam_summonerinfo_api = "/lol-champ-select/v1/session";		//获取己方队伍的信息,比如 summoner accoutid
+	const   std::string	get_current_game_mode_api = "/lol-gameflow/v1/session";		//430 匹配 420 单双排位 440灵活 450 大乱斗 云顶匹配 1090  云顶排位 1100 云顶狂暴 1130 云顶双人作战 1160
+	const	std::string use_reroller_api = "/lol-champ-select/v1/session/my-selection/reroll";	//使用骰子
+	const	std::string	get_owner_champions_api = "/lol-champions/v1/owned-champions-minimal";	//获取已经拥有的英雄
 	const	std::string	summonerid_get_summonerinfo_api = "/lol-summoner/v1/summoners/";	//根据summonerid获取信息 + ${summonerId}
 	const	std::string	gameid_get_detailed_data_api = "/lol-match-history/v1/games/";	//根据gameid获取详细数据,+gameid
 	const	std::string	summonerid_get_top_champion_api = "/lol-collections/v1/inventories/";//+ ${summonerId} + /champion-mastery/top?limit=6
-	const   std::string	get_current_game_mode = "/lol-gameflow/v1/session";		//430 匹配 420 单双排位 440灵活 450 大乱斗 云顶匹配 1090  云顶排位 1100 云顶狂暴 1130 云顶双人作战 1160
 	const	std::string	get_select_champion_chatroomid_api = "/lol-chat/v1/conversations";//获取选人界面时,游戏房间id
 };
+
+namespace HELPER
+{
+	class Match_helper//战绩助手实现
+	{
+	public:
+		Match_helper();//战绩助手实现
+		~Match_helper();//战绩助手实现
+
+	private:
+	};
+}
 
 

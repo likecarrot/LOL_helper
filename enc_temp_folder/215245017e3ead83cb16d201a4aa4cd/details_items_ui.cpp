@@ -20,10 +20,10 @@ void Details_Item::InitSubControls(const LCU_JSON_RESPONSE::LolMatchHistory& dat
 	use_champ = dynamic_cast<ui::Control*>(FindSubControl(L"use_champ"));
 	player_dealtandvision_detailinfo = dynamic_cast<ui::Label*>(FindSubControl(L"player_dealtandvision_detailinfo"));
 
-	if (data.game_mode.value()._Equal("CLASSIC"))	//这里还需要加上判断
-		game_mode->SetText(L"排位赛");
-	else
-		game_mode->SetText(StringToWString(data.game_mode.value()));
+	//if (data.game_mode.value()._Equal("CLASSIC"))	//这里还需要加上判断
+	//	game_mode->SetText(L"排位赛");
+	//else
+	//	game_mode->SetText(StringToWString(data.game_mode.value()));
 
 	//create_date->SetText(StringToWString(timestamp2string(data.game_creation.value())));
 	//game_date->SetText(L"对局时长:" + std::to_wstring(data.game_duration.value() / 60) + L"分钟");

@@ -55,45 +55,45 @@ LRESULT Details_Pop::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	}
 	return __super::HandleMessage(uMsg, wParam, lParam);
 }
-void	Details_Pop::init_info(std::vector<TEAM_SUMMONER_INFO> info) {
+void	Details_Pop::init_info(LCU_JSON_RESPONSE::LolChampSelect info) {
 	nbase::ThreadManager::PostTask(kThreadMain, [this, info] {
 		info_ = info;
 		});
 }
 void	Details_Pop::reset_info(int key) {
 	nbase::ThreadManager::PostTask(kThreadMain, [this, key] {
-		if (key >=0&&info_.size()!=0)
+		if (key >=0&&info_.my_team.size()!=0)
 		{
-			set_info_to_ui(info_.at(key%info_.size()));
+			set_info_to_ui(info_.my_team.at(key%info_.my_team.size()));
 		}
 		});
 }
 
-void	Details_Pop::set_info_to_ui(TEAM_SUMMONER_INFO player) {
-	wind_title->SetText(player.displayName);
-	if (all_datas.find(player.participantId) != all_datas.cend())
+void	Details_Pop::set_info_to_ui(LCU_JSON_RESPONSE::MyTeam player) {
+	wind_title->SetText(string2wstring(player.display_name));
+	if (all_datas.find(player.cell_id) != all_datas.cend())
 		nbase::ThreadManager::PostTask(kThreadMain, [this, player] {
-		Recv_datas1(all_datas.at(player.participantId));
+		Recv_datas1(all_datas.at(player.cell_id));
 			});
 	else
-		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Details_Pop::Recv_datas1, this, helper::getInstance().getHistoryMatchDatas(player.puuid, player.summonerId)));
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Details_Pop::Recv_datas1, this, raw_lcu_api::getInstance().getHistoryMatchDatas(player.puuid, std::to_string(player.summoner_id))));
 }
 
-void	Details_Pop::Recv_datas1(std::vector<PLAYER_HISTORY_MATCHDATA>	datas) {
+void	Details_Pop::Recv_datas1(LCU_JSON_RESPONSE::LolMatchHistory	datas) {
 	nbase::ThreadManager::PostTask(kThreadMain, [this, datas] {
-		if (datas.size() == 0)
+		if (datas.games->games.size() == 0)
 		{
 			return;
 		}
 		Vlist->RemoveAll();
-		for (const auto& a : info_) {
-			if (a.summonerId._Equal(datas.at(0).summoner_id))
+		for (const auto& a : info_.my_team) {
+			if (a.summoner_id==datas.account_id)
 			{
-				if (all_datas.find(a.participantId) == all_datas.cend())
+				if (all_datas.find(a.cell_id) == all_datas.cend())
 				{
-					all_datas.insert(std::make_pair(a.participantId, datas));
+					all_datas.insert(std::make_pair(a.cell_id, datas));
 				}
-				add_items(a.participantId);
+				add_items(a.cell_id);
 				break;
 			}
 		}
@@ -106,7 +106,7 @@ void	Details_Pop::add_items(int participantId) {
 		now_show_player_participantId = participantId;
 	}
 	
-	for (const auto& i : all_datas.at(participantId))
+	for (const auto& i : all_datas.at(participantId).games->games)
 	{
 		Details_Item* item = new Details_Item;
 		ui::GlobalManager::FillBoxWithCache(item, L"basic/detailsitem.xml");
@@ -115,5 +115,5 @@ void	Details_Pop::add_items(int participantId) {
 	}
 }
 bool	Details_Pop::details_isinvalid() {
-	return	info_.size() > 0 ? true : false;
+	return	info_.my_team.size() > 0 ? true : false;
 }

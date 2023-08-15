@@ -4,6 +4,7 @@
 #include	"lcu_riot/struct.h"
 #include	"utils.h"
 #include	"game_resource.h"
+#include	"lcu_structs.hpp"
 
 
 // 从 ui::ListContainerElement 中继承所有可用功能
@@ -14,7 +15,7 @@ public:
 	~Details_Item();
 
 	// 提供外部调用来初始化 item 数据
-	void InitSubControls(const PLAYER_HISTORY_MATCHDATA &data);
+	void InitSubControls(const LCU_JSON_RESPONSE::LolMatchHistory&data);
 
 private:
 	bool OnRemove(ui::EventArgs* args);

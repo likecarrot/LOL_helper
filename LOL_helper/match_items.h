@@ -4,14 +4,15 @@
 #include	"lcu_riot/struct.h"
 #include	"game_resource.h"
 #include	"GameItemsConstants.h"
+#include	"lcu_structs.hpp"
 
 // 从 ui::ListContainerElement 中继承所有可用功能
 namespace MATCH_ITEMS {
 	struct NEED_DATAS
 	{
 		std::wstring player_name;
-		RANK_LEVEL	rank_datas;
-		int	top1=0;	//英雄id
+		LCU_JSON_RESPONSE::LolRankedData	rank_datas;
+		int	top1 = 0;	//英雄id
 		int	top2 = 0;	//英雄id
 		int	top3 = 0;	//英雄id
 		int	top4 = 0;	//英雄id
@@ -40,18 +41,10 @@ public:
 
 
 		team_player_name->SetText(_info.player_name);
-		for (auto const& data : _info.rank_datas) {
-			if (data.cn._Equal(rank_class_dict.at("RANKED_SOLO_5x5")))
-			{
-				team_player_rank_SOLO->SetText(StringToWString(data.tier + " " + data.division));
-				team_player_rank_SOLO_last->SetText(StringToWString(data.previousEndTier + " " + data.previousEndDivision));
-			}
-			if (data.cn._Equal(rank_class_dict.at("RANKED_FLEX_SR")))
-			{
-				team_player_rank_FLEX->SetText(StringToWString(data.tier + " " + data.division));
-				team_player_rank_FLEX_last->SetText(StringToWString(data.previousEndTier + " " + data.previousEndDivision));
-			}
-		}
+		team_player_rank_SOLO->SetText(StringToWString(_info.rank_datas.queue_map.ranked_solo_5_x5.tier + " " + _info.rank_datas.queue_map.ranked_solo_5_x5.division));
+		team_player_rank_SOLO_last->SetText(StringToWString(_info.rank_datas.queue_map.ranked_solo_5_x5.previous_season_end_tier + " " + _info.rank_datas.queue_map.ranked_solo_5_x5.previous_season_end_division));
+		team_player_rank_FLEX->SetText(StringToWString(_info.rank_datas.queue_map.ranked_flex_sr.tier + " " + _info.rank_datas.queue_map.ranked_flex_sr.division));
+		team_player_rank_FLEX_last->SetText(StringToWString(_info.rank_datas.queue_map.ranked_flex_sr.previous_season_end_tier + " " + _info.rank_datas.queue_map.ranked_flex_sr.previous_season_end_division));
 		top1->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
 		top2->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top2)));
 		top3->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top3)));

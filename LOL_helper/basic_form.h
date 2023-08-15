@@ -13,7 +13,7 @@
 #include	"MiscThread.h"
 #include	"lcu_riot/config.h"
 
-#define	DYNAMIC_SKIN		//加入动态换肤
+//#define	DYNAMIC_SKIN		//加入动态换肤
 #ifdef DYNAMIC_SKIN
 #include	"dynamic_skin.h"
 #endif // DYNAMIC_SKIN
@@ -31,7 +31,7 @@ struct _UI_STATUS
 	bool	_ui_searchqueue_status = false;
 	bool	_ui_lockchampion_status = false;
 	int		_ui_champion_id = 0;
-	bool	_ui_marching_helper = true;
+	bool	_ui_matching_helper = true;
 	bool	_ui_aram_helper=true;
 };
 
@@ -84,7 +84,6 @@ public:
 
 	bool	OnSelected(ui::EventArgs* args);
 	void	update_select_status();
-	bool	OnSelectedChampion(ui::EventArgs* args);
 	bool	OnUiMyClose(ui::EventArgs* args);
 
 	void	open_player_helper_tools();
@@ -123,26 +122,21 @@ private:
 	//处理托盘图标上的事件
 	LRESULT OnTrayIcon(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL bHandled);
 
-	std::vector<CHAMPION>	have_champions_copy;	
-	std::vector<CHAMPION> have_champions_copy_sort;	
-	//副本数据,只作为查找选择id使用
-	//副本数据 这个结构是为了搜索框而设计的,如果搜索框里有内容就从这里面拿英雄id,如果没有 就从上面那个拿
-	// 
 	// 
 	//辅助函数
 	static std::wstring	add_str_status(std::wstring& content,bool status);
-	RANK_LEVEL_ITEM get(const RANK_LEVEL& vec,std::string en)const ;
-
-	bool	sort_champions_datas(ui::EventArgs* args);
+	//RANK_LEVEL_ITEM get(const RANK_LEVEL& vec,std::string en)const ;
 
 	void	Receive_Datas1(GAME_STATUS gamestatus);
-	void	Receive_Datas2(SUMMONER_INFO info);
-	void	Receive_Datas3(RANK_LEVEL rank_Datas);
-	void	Receive_Datas4(std::vector<CHAMPION> owner_datas);
+	void	Receive_Datas2(LCU_JSON_RESPONSE::LolSummonerInfo info);
+	void	Receive_Datas3(LCU_JSON_RESPONSE::LolRankedData rank_Datas);
+	void	Receive_Datas4(LCU_JSON_RESPONSE::LolOwnerChampions owner_datas);
 
 
 	void	set_current_player_icon(std::string icon_path);
 
+	void	load_configs();	//从全局变量中加载或保存配置
+	void	save_configs();
 #ifdef DYNAMIC_SKIN
 	//对动态皮肤新加入的处理
 	//2023-7-16

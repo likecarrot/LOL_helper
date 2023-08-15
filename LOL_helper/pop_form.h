@@ -22,7 +22,7 @@ public:
 	virtual LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	static const std::wstring kClassName;
 
-	void	Recv_info(std::vector<TEAM_SUMMONER_INFO> info);
+	void	Recv_info(LCU_JSON_RESPONSE::LolChampSelect info);
 	void	Recv_PosInfo(ui::UiRect	pos);
 	//¿Ø¼þÇø
 	void	init_all_controls();
@@ -31,7 +31,7 @@ private:
 	int		now_select_item_index = 0;
 	ui::ListBox* _list;
 	
-	std::vector<TEAM_SUMMONER_INFO> player_info;
+	LCU_JSON_RESPONSE::LolChampSelect player_info;
 	Details_Pop* details_wind;
 	std::mutex	details_wind_mtx;
 

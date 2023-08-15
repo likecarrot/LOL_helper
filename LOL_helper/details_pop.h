@@ -4,7 +4,7 @@
 #include	"lcu_riot/struct.h"
 #include	"lcu_riot/lol_helper.h"
 #include	"details_items_ui.h"
-
+#include	"lcu_structs.hpp"
 class Details_Pop : public ui::WindowImplBase
 {
 public:
@@ -35,18 +35,18 @@ public:
 	static const std::wstring kClassName;
 	bool	details_isinvalid();
 	void	reset_info(int key);
-	void	init_info(std::vector<TEAM_SUMMONER_INFO> info);
+	void	init_info(LCU_JSON_RESPONSE::LolChampSelect info);
 	bool	init_set_listen_controls(ui::EventArgs* args);
 private:
-	void	set_info_to_ui(TEAM_SUMMONER_INFO player);
-	void	Recv_datas1(std::vector<PLAYER_HISTORY_MATCHDATA>	datas);
+	void	set_info_to_ui(LCU_JSON_RESPONSE::MyTeam player);
+	void	Recv_datas1(LCU_JSON_RESPONSE::LolMatchHistory	datas);
 	void	add_items(int participantId);
 
 	int		now_show_player_participantId = 0;
 
 
-	std::vector<TEAM_SUMMONER_INFO>	info_;
-	std::map<int,std::vector<PLAYER_HISTORY_MATCHDATA>>	all_datas;//participantId --> Õ½¼¨
+	LCU_JSON_RESPONSE::LolChampSelect	info_;
+	std::map<int, LCU_JSON_RESPONSE::LolMatchHistory>	all_datas;//CellId --> Õ½¼¨
 
 	ui::Label* wind_title;
 	ui::ListBox* Vlist;

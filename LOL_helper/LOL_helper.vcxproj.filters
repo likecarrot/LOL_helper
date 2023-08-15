@@ -49,8 +49,8 @@
     <Filter Include="ui\ui_items\details_items">
       <UniqueIdentifier>{9a663eb9-1a62-46c0-ba9b-8c8036b1b919}</UniqueIdentifier>
     </Filter>
-    <Filter Include="riot_lcu\aram_helper">
-      <UniqueIdentifier>{89dfba82-aee1-4abc-99c1-f7700fc9b249}</UniqueIdentifier>
+    <Filter Include="riot_lcu\lcu_api_result_bean">
+      <UniqueIdentifier>{ec257c9a-db03-4608-8ff1-91d145155d5f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -61,9 +61,6 @@
       <Filter>riot_lcu</Filter>
     </ClCompile>
     <ClCompile Include="lcu_riot\lol_helper.cpp">
-      <Filter>riot_lcu</Filter>
-    </ClCompile>
-    <ClCompile Include="lcu_riot\parse_json.cpp">
       <Filter>riot_lcu</Filter>
     </ClCompile>
     <ClCompile Include="lcu_riot\request_utils.cpp">
@@ -102,9 +99,6 @@
     <ClCompile Include="utils.cpp">
       <Filter>system</Filter>
     </ClCompile>
-    <ClCompile Include="Aram_helper.cpp">
-      <Filter>riot_lcu\aram_helper</Filter>
-    </ClCompile>
     <ClCompile Include="global_.cpp">
       <Filter>system</Filter>
     </ClCompile>
@@ -120,9 +114,6 @@
       <Filter>riot_lcu</Filter>
     </ClInclude>
     <ClInclude Include="lcu_riot\lol_helper.h">
-      <Filter>riot_lcu</Filter>
-    </ClInclude>
-    <ClInclude Include="lcu_riot\parse_json.h">
       <Filter>riot_lcu</Filter>
     </ClInclude>
     <ClInclude Include="lcu_riot\public_status.h">
@@ -167,11 +158,11 @@
     <ClInclude Include="GameItemsConstants.h">
       <Filter>riot_lcu</Filter>
     </ClInclude>
-    <ClInclude Include="Aram_Helper.h">
-      <Filter>riot_lcu\aram_helper</Filter>
-    </ClInclude>
     <ClInclude Include="global_.h">
       <Filter>system</Filter>
+    </ClInclude>
+    <ClInclude Include="lcu_structs.hpp">
+      <Filter>riot_lcu\lcu_api_result_bean</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\download\NIM_Duilib_Framework-1.0.0;C:\vcpkg\packages\curl_x86-windows-static\include;C:\vcpkg\packages\zlib_x86-windows-static\include</IncludePath>
+    <IncludePath>D:\download\NIM_Duilib_Framework-1.0.0;C:\vcpkg\packages\curl_x86-windows-static\include;C:\vcpkg\packages\zlib_x86-windows-static\include;C:\vcpkg\installed\x86-windows\include</IncludePath>
     <LibraryPath>C:\vcpkg\packages\curl_x86-windows-static\lib;C:\vcpkg\packages\zlib_x86-windows-static\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -97,6 +97,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;BUILDING_LIBCURL;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,7 +156,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Aram_helper.cpp" />
     <ClCompile Include="basic_form.cpp" />
     <ClCompile Include="details_items_ui.cpp" />
     <ClCompile Include="details_pop.cpp" />
@@ -165,7 +165,6 @@
     <ClCompile Include="item.cpp" />
     <ClCompile Include="lcu_riot\config.cpp" />
     <ClCompile Include="lcu_riot\lol_helper.cpp" />
-    <ClCompile Include="lcu_riot\parse_json.cpp" />
     <ClCompile Include="lcu_riot\request_utils.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="match_items.cpp" />
@@ -175,8 +174,8 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Aram_Helper.h" />
     <ClInclude Include="basic_form.h" />
+    <ClInclude Include="lcu_structs.hpp" />
     <ClInclude Include="details_items_ui.h" />
     <ClInclude Include="details_pop.h" />
     <ClInclude Include="dynamic_skin.h" />
@@ -187,7 +186,6 @@
     <ClInclude Include="lcu_riot\config.h" />
     <ClInclude Include="lcu_riot\json.hpp" />
     <ClInclude Include="lcu_riot\lol_helper.h" />
-    <ClInclude Include="lcu_riot\parse_json.h" />
     <ClInclude Include="lcu_riot\public_status.h" />
     <ClInclude Include="lcu_riot\request_utils.h" />
     <ClInclude Include="lcu_riot\struct.h" />

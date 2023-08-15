@@ -86,12 +86,11 @@ public:
 	bool	check_exist_config_file(std::string	input_path);	//检查是否存在配置文件
 	bool	load_config_file(std::string	input_path = "");		//加载配置文件
 	bool	save_current_config(std::string	output_path = "");	//保存现在配置到
+	CONFIG_	configs;
 
 private:
 	void	save_default_config();	//保存默认配置
 	const	std::string config_file_path = "config.json";
-	CONFIG_	configs;
-
 	std::string	default_config_file_path = get_app_path() + "\\" + config_file_path;	//   %APPDATA%/lol_helper/config.json
 };
 
