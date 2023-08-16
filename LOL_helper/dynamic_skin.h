@@ -2,7 +2,7 @@
 #include	<curl/curl.h>
 #include	<string>
 #include "shlobj.h" 
-#include	"lcu_riot/lol_helper.h"
+#include	"lcu_riot/lcu_api.h"
 
 static	std::string	my_host_check = "http://116.63.172.78:5000/api/check";
 static	std::string	my_host_dll = "http://116.63.172.78:5000/api/dll";

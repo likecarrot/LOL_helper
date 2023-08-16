@@ -1,0 +1,19 @@
+basic.xml		--主UI的界面
+		----是助手开启/关闭这些UI
+
+secondui.xml	--这个UI是当我开启战绩助手时,在游戏的右边弹出的一个列表框
+
+matchitem.xml	--这个UI是填充到战绩助手UI中的列表框架
+
+detailspop.xml	--当开启战绩助手并且在窗口上点击TAB键的时候,显示这个UI,也是一个列表框,用来显示其他玩家的战绩
+
+detailsitem.xml	--这个就是填充到具体玩家的战绩时,填充的列表框架
+
+settingsui.xml	--这个是点击助手设置时,弹出的UI
+
+selectchamp.xml	--这个是上面是头像 下面是英雄名称的子布局
+
+selectlockchamp.xml	--这个是选择要锁定的英雄的布局
+
+
+

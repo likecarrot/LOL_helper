@@ -2,7 +2,7 @@
 #include	<base/base.h>
 #include	<duilib/UIlib.h>
 #include	"lcu_riot/struct.h"
-#include	"lcu_riot/lol_helper.h"
+#include	"lcu_riot/lcu_api.h"
 #include	"utils.h"
 #include	"item.h"
 #include	<Windows.h>
@@ -12,8 +12,11 @@
 #include	"game_resource.h"
 #include	"MiscThread.h"
 #include	"lcu_riot/config.h"
+#include	"game_helper.h"
+#include	"helper_setting.h"
 
-//#define	DYNAMIC_SKIN		//加入动态换肤
+
+#define	DYNAMIC_SKIN		//加入动态换肤
 #ifdef DYNAMIC_SKIN
 #include	"dynamic_skin.h"
 #endif // DYNAMIC_SKIN
@@ -23,17 +26,6 @@
 #define TRAY_ICON_ID 1001
 #define	MENUBAR_ONCLOSE	1002
 #define	MENUBAR_COPYQQ	1003
-
-struct _UI_STATUS
-{
-	bool	_ui_accept_status = true;
-	bool	_ui_nextgame_status = false;
-	bool	_ui_searchqueue_status = false;
-	bool	_ui_lockchampion_status = false;
-	int		_ui_champion_id = 0;
-	bool	_ui_matching_helper = true;
-	bool	_ui_aram_helper=true;
-};
 
 class BasicForm : public ui::WindowImplBase
 {
@@ -63,30 +55,20 @@ public:
 	 */
 	virtual LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	static const std::wstring kClassName;
-	
-	
 
-	//控件区
-	void	init_all_controls();
-	void	init_set_listen_controls();
-
+	
+private:	//变量区
+	
 	ui::CheckBox* _ui_accept;		//复选框 
 	ui::CheckBox* _ui_nextgame;
 	ui::CheckBox* _ui_searchqueue;
-	ui::CheckBox* _ui_lockchampion;
 	ui::CheckBox* _ui_player_helper;//战绩助手
 	ui::CheckBox* _ui_aram_helper;//大乱斗助手
-	ui::Label* _ui_selectchampion;	//用户双击后提示目前所需要拿的英雄,仅作显示用
+	ui::CheckBox* _ui_classic_helper;//匹配助手
+
 	ui::VBox* tools_area;		//功能区域的容器
 	ui::Control* summoner_icon;	//用户头像
 	ui::CheckBox* _dynamic_skin;	//动态换肤 这个控件默认是隐藏的
-	ui::Label* _download_R3nzdll;//下载进度
-
-	bool	OnSelected(ui::EventArgs* args);
-	void	update_select_status();
-	bool	OnUiMyClose(ui::EventArgs* args);
-
-	void	open_player_helper_tools();
 
 	ui::Label* _ui_player_name;
 	ui::Label* _ui_player_level;
@@ -96,47 +78,49 @@ public:
 	ui::Label* _ui_RANKED_TFT_TURBO;
 	ui::Label* _ui_RANKED_TFT_DOUBLE_UP;
 	ui::Label* display_game_status;
-	ui::ListBox* _champion_list;
-	ui::RichEdit* _ui_search_champion;
 
 	ui::Button* _ui_close;
-private:
-	//使用的线程
-	std::mutex	ui_still_alive_lock;
-	bool	still_alive = false;
-	std::unique_ptr<MiscThread>	loop_getgameuipos_thread_;	//循环获取LOL的界面位置线程
-	//这个结构用来标识功能的ui的选择状态
-	_UI_STATUS	ui_datas;
-	
+	ui::Button* _helper_settings;//助手设置 按钮
+
+	GAME_HELPER::Aram_helper	aram_helper;	//两个助手相关
+	GAME_HELPER::Classic_helper classic_helper;	//两个助手相关
 
 	// 自定义消息的ID
 	UINT myMessage = RegisterWindowMessage(L"ONLY_ONE");
-
-
 	Pop_form* tools_windows;//lol助手窗口
-
 	//托盘图标
 	NOTIFYICONDATA	m_trayIcon;
+
+	//使用的线程
+	std::mutex	ui_still_alive_lock;
+	bool	still_alive = false;
+
+private://函数区
+	bool	OnSelected(ui::EventArgs* args);	//复选框被单击的处理函数
+	void	update_select_status();	//当ui'上复选框被选择时,更新复选框的显示文本
+	bool	OnUiMyClose(ui::EventArgs* args);	//这个是当ui上 关闭按钮 被单击时 设置一个托盘图标的函数
+	bool	OnHelperSettings(ui::EventArgs* args);//当ui上 助手设置被单击时的处理函数
+
+	void	open_player_helper_tools();	//当开启战绩助手之后,调用这个函数来弹出战绩框
+	//控件初始化函数
+	void	init_all_controls();
+	void	init_set_listen_controls();
+	
 	//添加托盘图标(初始化)
-	void AddTrayIcon();
+	void	AddTrayIcon();
 	//处理托盘图标上的事件
 	LRESULT OnTrayIcon(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL bHandled);
 
-	// 
 	//辅助函数
-	static std::wstring	add_str_status(std::wstring& content,bool status);
-	//RANK_LEVEL_ITEM get(const RANK_LEVEL& vec,std::string en)const ;
+	static std::wstring	add_str_status(const std::wstring& content,bool status);
 
+	//网络请求结束后的回调函数
 	void	Receive_Datas1(GAME_STATUS gamestatus);
 	void	Receive_Datas2(LCU_JSON_RESPONSE::LolSummonerInfo info);
 	void	Receive_Datas3(LCU_JSON_RESPONSE::LolRankedData rank_Datas);
-	void	Receive_Datas4(LCU_JSON_RESPONSE::LolOwnerChampions owner_datas);
-
 
 	void	set_current_player_icon(std::string icon_path);
-
-	void	load_configs();	//从全局变量中加载或保存配置
-	void	save_configs();
+	void	config_file_settings_to_ui();
 #ifdef DYNAMIC_SKIN
 	//对动态皮肤新加入的处理
 	//2023-7-16

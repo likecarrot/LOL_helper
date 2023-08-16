@@ -49,27 +49,18 @@ private:
 
     LCU_REQUEST() {}
     ~LCU_REQUEST() {
-        curl_easy_cleanup(session);
     }
 
     // 禁止拷贝构造函数和赋值运算符
     LCU_REQUEST(const LCU_REQUEST&) = delete;
     LCU_REQUEST& operator=(const LCU_REQUEST&) = delete;
-
+    CURL* create_curl(RequestMethod method, std::string path);//需要自己清理 并且path中没有包含localhost 自己填写
     std::string auth_;
     std::string port_;
-    // 其他成员变量
-    CURL* session= curl_easy_init();
     std::string base_url;
+    std::string basic_auth;
     static size_t write_file_callback(void* ptr, size_t size, size_t nmemb, FILE* stream);
     static size_t write_callback(void* contents, size_t size, size_t nmemb, void* userp);
-    const std::map<LCU_REQUEST::RequestMethod, CURLoption> method_options = {
-    {RequestMethod::GET_METHOD, CURLOPT_HTTPGET},
-    {RequestMethod::POST_METHOD, CURLOPT_POST},
-    {RequestMethod::PUT_METHOD, CURLOPT_CUSTOMREQUEST},
-    {RequestMethod::DELETE_METHOD, CURLOPT_CUSTOMREQUEST},
-    {RequestMethod::PATCH_METHOD, CURLOPT_CUSTOMREQUEST}
-    };
 
 };
 

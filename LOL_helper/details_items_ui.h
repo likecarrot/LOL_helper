@@ -5,7 +5,7 @@
 #include	"utils.h"
 #include	"game_resource.h"
 #include	"lcu_structs.hpp"
-
+#include	"GameItemsConstants.h"
 
 // 从 ui::ListContainerElement 中继承所有可用功能
 class Details_Item : public ui::ListContainerElement

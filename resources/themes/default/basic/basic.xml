@@ -8,39 +8,34 @@
       <Button class="btn_wnd_close" name="closebtn1" margin="0,0,0,0" />
     </HBox>
 
-
+    <!-- 横线是宽 width 竖线是高 height -->
     <HBox>
       <VBox width="120" margin="20,0,0,10">
         <!-- 这是左边 功能区-->
-        <VBox name="tools_area" width="auto">
-          <CheckBox text="自动接收对局" name="_ui_accept" selected="true" selectedtextcolor="red"
+        <VBox name="tools_area" width="120">
+          <CheckBox class="_checkbox_class_system" text="自动接收对局" name="_ui_accept" selected="true"
             margin="0,10,0,0" />
-          <CheckBox text="自动再来一局" name="_ui_nextgame" selected="false" selectedtextcolor="red"
+          <CheckBox class="_checkbox_class_system" text="自动再来一局" name="_ui_nextgame"
+            selected="false"
             margin="0,10,0,0" />
-          <CheckBox text="自动匹配" name="_ui_searchqueue" selected="false" selectedtextcolor="red"
+          <CheckBox class="_checkbox_class_system" text="自动匹配" name="_ui_searchqueue"
+            selected="false"
             margin="0,10,0,0" />
-          <CheckBox text="自动锁定英雄" name="_ui_lockchampion" selected="false" selectedtextcolor="red"
+          <CheckBox class="_checkbox_class_system" text="战绩助手" name="matching_helper"
+            selected="true"
             margin="0,10,0,0" />
-          <CheckBox text="战绩助手" name="matching_helper" selected="true" selectedtextcolor="red"
+          <CheckBox class="_checkbox_class_system" text="大乱斗助手" name="aram_helper" selected="false"
             margin="0,10,0,0" />
-          <CheckBox text="大乱斗助手" name="aram_helper" selected="true" selectedtextcolor="red"
+          <CheckBox class="_checkbox_class_system" text="匹配助手" name="classic_helper"
+            selected="false"
             margin="0,10,0,0" />
-          <Label text="目前预选英雄" name="_ui_champion" width="110" endellipsis="false"
-            normaltextcolor="black" margin="0,10,0,0" />
-          <Box bordersize="1" bordercolor="splitline_level1" width="110" height="25"
-            margin="0,10,0,0"
-            padding="2,2,2,2">
-            <RichEdit name="edit_total" height="30" margin="0,3" align="left"
-              normaltextcolor="black" multiline="false"
-              promptmode="true" prompttext="搜索英雄" promptcolor="lightcolor" />
-          </Box>
-          <Box>
-            <VListBox class="list" name="list"></VListBox>
-          </Box>
+          <Control width="stretch" />
+          <Button class="_normal_btn_class" text="助手设置" name="helper_settings"
+            normaltextcolor="black" margin="0,10,0,0" width="55" height="20" />
         </VBox>
       </VBox>
 
-      <VBox width="180" bkcolor="bk_wnd_lightcolor">
+      <VBox width="190" bkcolor="bk_wnd_lightcolor">
         <!-- 这是右边 显示区-->
         <VBox width="stretch" height="120">
           <Control width="100" height="100" name="summoner-icon" halign="center" valign="center"
@@ -91,8 +86,8 @@
         </VBox>
 
         <VBox margin="10,5,0,0">
-          <Label width="auto" height="10" endellipsis="false" normaltextcolor="black"
-            name="_download_progress" />
+          <!-- <Label width="auto" height="10" endellipsis="false" normaltextcolor="black"
+            name="_download_progress" /> -->
           <CheckBox text="O No 隐藏功能暂时不开启" name="_dynamic_skin" selected="false"
             selectedtextcolor="red"
           />

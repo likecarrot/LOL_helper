@@ -20,30 +20,31 @@ void Details_Item::InitSubControls(const LCU_JSON_RESPONSE::LolMatchHistory& dat
 	use_champ = dynamic_cast<ui::Control*>(FindSubControl(L"use_champ"));
 	player_dealtandvision_detailinfo = dynamic_cast<ui::Label*>(FindSubControl(L"player_dealtandvision_detailinfo"));
 
-	if (data.game_mode.value()._Equal("CLASSIC"))	//这里还需要加上判断
-		game_mode->SetText(L"排位赛");
-	else
-		game_mode->SetText(StringToWString(data.game_mode.value()));
 
-	//create_date->SetText(StringToWString(timestamp2string(data.game_creation.value())));
-	//game_date->SetText(L"对局时长:" + std::to_wstring(data.game_duration.value() / 60) + L"分钟");
+	if (!F_game_class.GetSecond(data.queue_id.value()).empty())
+	{
+		game_mode->SetText(StringToWString(F_game_class.GetSecond(data.queue_id.value())));
+	}else
+		game_mode->SetText(L"未知模式");
+	
+	create_date->SetText(StringToWString(timestamp2string(data.game_creation.value())));
+	game_date->SetText(L"对局时长:" + std::to_wstring(data.game_duration.value() / 60) + L"分钟");
 
-	//
-	//game_win->SetText( (data.teams.value().at(0).win._Equal("win")) ? L"胜利" : L"失败");
-	//game_win->SetStateTextColor(ui::ControlStateType::kControlStateNormal, (data.teams.value().at(0).win._Equal("win")) ? L"blue" : L"red");
+	
+	game_win->SetText( data.participants.value().at(0).stats.win ? L"胜利" : L"失败");
+	game_win->SetStateTextColor(ui::ControlStateType::kControlStateNormal, (data.participants.value().at(0).stats.win) ? L"blue" : L"red");
 
 
-	//std::string kda = std::to_string(data.teams.value().at(0).baron_kills) + "/";		//这里瞎填的成员
-	//kda.append(std::to_string(data.) + "/");
-	//kda.append(std::to_string(data.participants.assists)+" ");
-	//
-	//kda.append("Lv:" + std::to_string(data.participants.champLevel));
-	//kda.append(" 经济:" + std::to_string(data.participants.goldEarned));
-	//player_kda->SetText(StringToWString(kda));
-
-	//std::string	dealt = "对英雄伤害:" + std::to_string(data.participants.totalDamageDealtToChampions);
-	//dealt.append(" 视野:" + std::to_string(data.participants.visionScore));
-	//player_dealtandvision_detailinfo->SetText(StringToWString(dealt));
+	std::string kda = std::to_string(data.participants.value().at(0).stats.kills) + "/";		//这里瞎填的成员
+	kda.append(std::to_string(data.participants.value().at(0).stats.deaths) + "/");
+	kda.append(std::to_string(data.participants.value().at(0).stats.assists)+" ");
+	
+	kda.append("Lv:" + std::to_string(data.participants.value().at(0).stats.champ_level));
+	kda.append(" 经济:" + std::to_string(data.participants.value().at(0).stats.gold_earned));
+	player_kda->SetText(StringToWString(kda));
+	std::string	dealt = "对英雄伤害:" + std::to_string(data.participants.value().at(0).stats.total_damage_dealt_to_champions);
+	dealt.append(" 视野:" + std::to_string(data.participants.value().at(0).stats.vision_score));
+	player_dealtandvision_detailinfo->SetText(StringToWString(dealt));
 
 	nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Details_Item::SetBkImg, this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, data.participants.value().at(0).champion_id)));
 }

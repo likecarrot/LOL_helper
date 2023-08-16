@@ -20,14 +20,6 @@ enum class RANK_LEVEL_INDEX
 	RANKED_TFT_DOUBLE_UP
 };
 
-/*RANK_LEVEL_ITEM RANKED_SOLO_5x5;
-RANK_LEVEL_ITEM RANKED_FLEX_SR;
-RANK_LEVEL_ITEM RANKED_TFT;
-RANK_LEVEL_ITEM RANKED_TFT_TURBO;
-RANK_LEVEL_ITEM RANKED_TFT_DOUBLE_UP;*/
-
-
-
 
 
 enum class GAME_STATUS
@@ -68,3 +60,13 @@ inline GAME_STATUS	get_enum_gamestatus(std::string status) {
 	}
 	return	GAME_STATUS::Error;
 }
+
+
+struct CHAMP_INFO
+{
+	int		champ_id;
+	std::string	champ_name;
+	int		lova_score;	//只有aram助手用得到 并且会在使用的地方进行自主初始化
+public:
+	CHAMP_INFO():champ_id(0),champ_name(),lova_score(0){}
+};

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="275,80">
+<Window size="285,80">
     <ListContainerElement class="listitem">
         <VBox height="100" mouse="false" padding="5,5,5,5">
             <HBox margin="0,3,0,0" mouse="false">
-                <Label name="team_player_name" singleline="true" halign="center" valign="center"
-                    width="100"
-                    normaltextcolor="red" />
+                <VBox width="110">
+                    <Label name="team_player_name" singleline="true" align="left"
+                        normaltextcolor="red" />
+                    <Label name="team_player_level" singleline="true" align="left" />
+                </VBox>
 
                 <VBox width="85">
                     <Label text="本赛季:单双/灵活" normaltextcolor="blue" font="system_10" />
@@ -22,20 +24,20 @@
             </HBox>
 
 
-            <HBox margin="0,0,0,5" mouse="false">
+            <HBox margin="0,0,0,5" mouse="false" height="42">
                 <Label name="熟练度top:" />
-                <Control name="top1" halign="center" valign="center"
-                    bordercolor="gray" bordersize="2,2,2,2" />
-                <Control name="top2" halign="center" valign="center"
-                    bordercolor="gray" bordersize="2,2,2,2" />
-                <Control name="top3" halign="center" valign="center"
-                    bordercolor="gray" bordersize="2,2,2,2" />
-                <Control name="top4" halign="center" valign="center"
-                    bordercolor="gray" bordersize="2,2,2,2" />
-                <Control name="top5" halign="center" valign="center"
-                    bordercolor="gray" bordersize="2,2,2,2" />
-                <Control name="top6" halign="center" valign="center"
-                    bordercolor="gray" bordersize="2,2,2,2" />
+                <Control name="top1" halign="center" valign="bottom" width="40" height="40"
+                    bordercolor="bk_wnd_lightcolor" bordersize="2,2,2,2" />
+                <Control name="top2" halign="center" valign="bottom" width="40" height="40"
+                    bordercolor="bk_wnd_lightcolor" bordersize="2,2,2,2" />
+                <Control name="top3" halign="center" valign="bottom" width="40" height="40"
+                    bordercolor="bk_wnd_lightcolor" bordersize="2,2,2,2" />
+                <Control name="top4" halign="center" valign="bottom" width="40" height="40"
+                    bordercolor="bk_wnd_lightcolor" bordersize="2,2,2,2" />
+                <Control name="top5" halign="center" valign="bottom" width="40" height="40"
+                    bordercolor="bk_wnd_lightcolor" bordersize="2,2,2,2" />
+                <Control name="top6" halign="center" valign="bottom" width="40" height="40"
+                    bordercolor="bk_wnd_lightcolor" bordersize="2,2,2,2" />
             </HBox>
         </VBox>
     </ListContainerElement>

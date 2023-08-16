@@ -2,7 +2,7 @@
 #include	<base/base.h>
 #include	<duilib/UIlib.h>
 #include	"lcu_riot/struct.h"
-#include	"lcu_riot/lol_helper.h"
+#include	"lcu_riot/lcu_api.h"
 #include	"match_items.h"
 #include	"MiscThread.h"
 #include	"item.h"
@@ -25,7 +25,6 @@ public:
 	void	Recv_info(LCU_JSON_RESPONSE::LolChampSelect info);
 	void	Recv_PosInfo(ui::UiRect	pos);
 	//¿Ø¼þÇø
-	void	init_all_controls();
 	bool	init_set_listen_controls(ui::EventArgs* args);
 private:
 	int		now_select_item_index = 0;

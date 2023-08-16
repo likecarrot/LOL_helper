@@ -82,7 +82,7 @@ bool	GAME_RESOURCES::GAME_RES::download(DOWN_TYPE type, std::string child_url, s
 			return	false;
 		}
 		catch (const nlohmann::json::parse_error&) {
-			std::cout << "Response is not a valid JSON. Saving to file." << std::endl;
+			std::cout << "Download Game Resources Icon or ChampIcon." << std::endl;
 			fwrite(response.c_str(), 1, response.length(), fp);
 		}
 		fclose(fp);

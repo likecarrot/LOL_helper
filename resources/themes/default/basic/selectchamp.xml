@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Window>
+    <ListContainerElement class="listitem" height="75">
+        <VBox mouse="false" padding="2,2,2,2">
+            <Control name="champ_img" height="50" width="50" valign="center" />
+            <Label name="champ_name" height="25" width="75" valign="center" />
+        </VBox>
+    </ListContainerElement>
+</Window>

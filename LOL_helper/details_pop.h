@@ -2,9 +2,10 @@
 #include	<base/base.h>
 #include	<duilib/UIlib.h>
 #include	"lcu_riot/struct.h"
-#include	"lcu_riot/lol_helper.h"
+#include	"lcu_riot/lcu_api.h"
 #include	"details_items_ui.h"
 #include	"lcu_structs.hpp"
+#include	"MiscThread.h"
 class Details_Pop : public ui::WindowImplBase
 {
 public:
@@ -34,21 +35,23 @@ public:
 	virtual LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	static const std::wstring kClassName;
 	bool	details_isinvalid();
-	void	reset_info(int key);
+	void	reset_info();
 	void	init_info(LCU_JSON_RESPONSE::LolChampSelect info);
-	bool	init_set_listen_controls(ui::EventArgs* args);
 private:
 	void	set_info_to_ui(LCU_JSON_RESPONSE::MyTeam player);
 	void	Recv_datas1(LCU_JSON_RESPONSE::LolMatchHistory	datas);
 	void	add_items(int participantId);
 
-	int		now_show_player_participantId = 0;
+	int64_t		now_player_cellid = 0;	//这里0是默认初始化 还有一次初始化 把他赋值成第一个元素的cellid
 
 
 	LCU_JSON_RESPONSE::LolChampSelect	info_;
+	std::map<int64_t,const LCU_JSON_RESPONSE::MyTeam>	info_my_team;
 	std::map<int, LCU_JSON_RESPONSE::LolMatchHistory>	all_datas;//CellId --> 战绩
 
 	ui::Label* wind_title;
 	ui::ListBox* Vlist;
 	ui::VBox* main_box;
+
+	std::mutex	_data_mtx;
 };

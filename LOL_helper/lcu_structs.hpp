@@ -1256,7 +1256,7 @@ namespace LCU_JSON_RESPONSE {
     }
 
     inline void from_json(const json& j, Map& x) {
-        x.assets = j.at("assets").get<Assets>();
+        //x.assets = j.at("assets").get<Assets>();
         x.categorized_content_bundles = j.at("categorizedContentBundles").get<SplitsProgress>();
         x.description = j.at("description").get<std::string>();
         x.game_mode = j.at("gameMode").get<std::string>();
@@ -1774,7 +1774,10 @@ namespace LCU_JSON_RESPONSE {
         x.id = j.at("id").get<int64_t>();
         x.is_ally_action = j.at("isAllyAction").get<bool>();
         x.is_in_progress = j.at("isInProgress").get<bool>();
-        x.pick_turn = j.at("pickTurn").get<int64_t>();
+        if (j.contains("pickTurn"))
+        {
+            x.pick_turn = j.at("pickTurn").get<int64_t>();
+        }
         x.type = j.at("type").get<std::string>();
     }
 

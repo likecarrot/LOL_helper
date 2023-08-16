@@ -32,3 +32,7 @@ private:
 private:
 	enum ThreadIds thread_id_;
 };
+
+
+//投递任务到UI线程
+void Post2UI(const StdClosure& closure);

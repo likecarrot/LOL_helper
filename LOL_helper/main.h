@@ -21,15 +21,12 @@ private:
 	* @return void	无返回值
 	*/
 	virtual void Init() override;
-
+	void	startMiscThread();
+	void	StopMiscThread();
 	/**
 	* 虚函数，主线程退出时，做一些清理工作
 	* @return void	无返回值
 	*/
 	virtual void Cleanup() override;
 	void	check_only();
-
-private:
-	std::unique_ptr<MiscThread>	loop_getgamestatus_thread_;	//循环获取游戏状态的线程
-	std::unique_ptr<MiscThread>	network_thread_;	// 负责网络请求的线程
 };

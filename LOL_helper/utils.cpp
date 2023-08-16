@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 #include <Windows.h>
-
+#pragma comment(lib, "Urlmon.lib") 
+#include	<Shlobj.h>
+#include <tchar.h>
 
 std::string to_string(long long num)
 {
@@ -202,6 +204,10 @@ void CopyTextToClipboard(const std::wstring& text) {
 		}
 		CloseClipboard();
 	}
+	const TCHAR szOperation[] = _T("open");
+	const TCHAR szAddress[] = _T("https://qm.qq.com/cgi-bin/qm/qr?k=41ynsb-IkVHs-H7f6ElttSeUOopoFAqm&jump_from=webapi&authKey=snh/EwHV9krS2juORMHNkmiOLD6Jrump+wRzMYm74toEIDlw23ibfRV1AfQmTeMu");
+	HINSTANCE hRslt = ShellExecute(NULL, szOperation,
+		szAddress, NULL, NULL, SW_SHOWNORMAL);
 }
 
 

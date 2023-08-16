@@ -52,6 +52,21 @@
     <Filter Include="riot_lcu\lcu_api_result_bean">
       <UniqueIdentifier>{ec257c9a-db03-4608-8ff1-91d145155d5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="helpers">
+      <UniqueIdentifier>{154fb5cb-6bad-427f-8836-3e362d72620b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\helper_setting_ui">
+      <UniqueIdentifier>{4bdb0e8a-99cc-4f31-8bb7-a510876a7ca9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\helper_setting_ui\lock_champ_ui">
+      <UniqueIdentifier>{ae877e98-e258-48b3-ae52-2a3a37c6f8d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\helper_setting_ui\item_ui">
+      <UniqueIdentifier>{90259d43-dc81-4fef-a343-c2c04acda641}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui\helper_setting_ui\lova_champ_ui">
+      <UniqueIdentifier>{bd5bc574-3ac7-420b-86d6-ee30b16dd32c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,7 +75,7 @@
     <ClCompile Include="lcu_riot\config.cpp">
       <Filter>riot_lcu</Filter>
     </ClCompile>
-    <ClCompile Include="lcu_riot\lol_helper.cpp">
+    <ClCompile Include="lcu_riot\lcu_api.cpp">
       <Filter>riot_lcu</Filter>
     </ClCompile>
     <ClCompile Include="lcu_riot\request_utils.cpp">
@@ -102,6 +117,27 @@
     <ClCompile Include="global_.cpp">
       <Filter>system</Filter>
     </ClCompile>
+    <ClCompile Include="game_helper.cpp">
+      <Filter>helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="helper_setting.cpp">
+      <Filter>ui\helper_setting_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="lock_champs_ui.cpp">
+      <Filter>ui\helper_setting_ui\lock_champ_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="champ_ui.cpp">
+      <Filter>ui\helper_setting_ui\item_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="VirtualTileBox.cpp">
+      <Filter>ui\helper_setting_ui\item_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="provider.cpp">
+      <Filter>ui\helper_setting_ui\item_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="lova_champ_ui.cpp">
+      <Filter>ui\helper_setting_ui\lova_champ_ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -113,10 +149,7 @@
     <ClInclude Include="lcu_riot\json.hpp">
       <Filter>riot_lcu</Filter>
     </ClInclude>
-    <ClInclude Include="lcu_riot\lol_helper.h">
-      <Filter>riot_lcu</Filter>
-    </ClInclude>
-    <ClInclude Include="lcu_riot\public_status.h">
+    <ClInclude Include="lcu_riot\lcu_api.h">
       <Filter>riot_lcu</Filter>
     </ClInclude>
     <ClInclude Include="lcu_riot\request_utils.h">
@@ -163,6 +196,27 @@
     </ClInclude>
     <ClInclude Include="lcu_structs.hpp">
       <Filter>riot_lcu\lcu_api_result_bean</Filter>
+    </ClInclude>
+    <ClInclude Include="game_helper.h">
+      <Filter>helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="helper_setting.h">
+      <Filter>ui\helper_setting_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="lock_champs_ui.h">
+      <Filter>ui\helper_setting_ui\lock_champ_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="champ_ui.h">
+      <Filter>ui\helper_setting_ui\item_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="VirtualTileBox.h">
+      <Filter>ui\helper_setting_ui\item_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="provider.h">
+      <Filter>ui\helper_setting_ui\item_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="lova_champ_ui.h">
+      <Filter>ui\helper_setting_ui\lova_champ_ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

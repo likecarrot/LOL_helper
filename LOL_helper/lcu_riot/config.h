@@ -6,77 +6,49 @@
 #include	<list>
 using   json = nlohmann::json;
 
+
+struct AramConfig {
+	int Use_Reroller;
+	int	wait_lova_champs_max_sec;
+	std::vector<std::pair<int, int>> love_champs;
+	AramConfig() : Use_Reroller(1), love_champs(), wait_lova_champs_max_sec(30){
+		// 在构造函数中将 love_champs 初始化为空的 std::vector
+	}
+};
 struct CONFIG_
 {
-	bool	_auto_accept = true;
-	bool	_auto_next = true;
-	bool	_search_queue = false;
-	bool	_lock_champion = false;
-	int		_lock_champion_id = 0;
-
-	bool	_matching_helper = true;
-	bool	_aram_helper = true;
-	struct {
-		int	Use_Reroller = 0;	//配置方面,0-代表不使用 1-代表没有时使用 2-代表有就使用
-		std::vector<std::pair<int, int>> love_champs;//喜欢的英雄  int-好感值 英雄id
-		std::vector<std::pair<int, int>> hate_champs;//不喜欢的英雄 int-讨厌值 英雄id
-		std::vector<int> normal_champs;//无感的英雄 英雄id
-	}_aram_config;
-public:
-	std::string output_config() {
-		json json_data = {
-			{"auto_accept_switch", _auto_accept},
-			{"auto_next_again_switch", _auto_next},
-			{"auto_search_queue_switch", _search_queue},
-			{"lock_champion_switch", _lock_champion},
-			{"lock_champion_id", _lock_champion_id},
-			{"matching_helper_switch", _matching_helper},
-			{"aram_helper_switch", _aram_helper}
-		};
-
-		json_data["love_champs"] = _aram_config.love_champs;
-		json_data["hate_champs"] = _aram_config.hate_champs;
-		json_data["normal_champs"] = _aram_config.normal_champs;
-		return  json_data.dump(4);
-	};
-	void load_configs(json j, CONFIG_& config) {
-		// Load config values from JSON
-		config._auto_accept = j["auto_accept_switch"];
-		config._auto_next = j["auto_next_again_switch"];
-		config._search_queue = j["auto_search_queue_switch"];
-		config._lock_champion = j["lock_champion_switch"];
-		config._lock_champion_id = j["lock_champion_id"];
-		config._matching_helper = j["matching_helper_switch"];
-		config._aram_helper = j["aram_helper_switch"];
-
-		if (j.contains("love_champs") && !j["love_champs"].empty()) {
-			std::vector<std::vector<nlohmann::json>> loveChamps = j["love_champs"];
-			for (const auto& champ : loveChamps) {
-				int score = champ[0];
-				int champId = champ[1];
-				config._aram_config.love_champs.push_back(std::make_pair(score, champId));
-			}
+	bool	accept_status = true;
+	bool	nextgame_status = false;
+	bool	searchqueue_status = false;
+	bool	matching_helper = true;
+	bool	aram_helper = false;
+	bool	classic_helper = false;
+	int		accept_timeout = 5;	
+	AramConfig	_aram_config;
+	struct
+	{
+		bool	auto_lock = false;
+		int		champ_id = 0;
+		int	lockchamp_timeout = 30;
+	}_classic_config;
+	// 赋值运算符重载
+	CONFIG_& operator=(const CONFIG_& other)
+	{
+		if (this != &other) {
+			// 复制所有成员变量
+			accept_status = other.accept_status;
+			nextgame_status = other.nextgame_status;
+			searchqueue_status = other.searchqueue_status;
+			matching_helper = other.matching_helper;
+			aram_helper = other.aram_helper;
+			classic_helper = other.classic_helper;
+			_aram_config = other._aram_config;
+			_classic_config = other._classic_config;
+			accept_timeout = other.accept_timeout;
 		}
-
-		if (j.contains("hate_champs") && !j["hate_champs"].empty()) {
-			std::vector<std::vector<nlohmann::json>> hateChamps = j["hate_champs"];
-			for (const auto& champ : hateChamps) {
-				int score = champ[0];
-				int champId = champ[1];
-				config._aram_config.hate_champs.push_back(std::make_pair(score, champId));
-			}
-		}
-
-		if (j.contains("normal_champs") && !j["normal_champs"].empty()) {
-			for (const auto& champ : j["normal_champs"]) {
-				int champId = champ;
-				config._aram_config.normal_champs.push_back(champId);
-			}
-		}
-	};
+		return *this;
+	}
 };
-
-
 
 class CONFIG_FILES
 {
@@ -94,3 +66,14 @@ private:
 	std::string	default_config_file_path = get_app_path() + "\\" + config_file_path;	//   %APPDATA%/lol_helper/config.json
 };
 
+struct Settings_Config
+{
+	std::string	lock_champname;
+	int		lock_champid;
+	bool	autolock = false;
+	int	autolock_timeout = 0;
+	int	accept_timeout = 0;
+	int aram_maxtimeout = 0;
+	int	reroll = 1;
+	std::vector <std::pair<int, int>>	lova_champlist;
+};

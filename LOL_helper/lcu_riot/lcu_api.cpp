@@ -1,4 +1,4 @@
-﻿#include	"lol_helper.h"
+﻿#include	"lcu_api.h"
 #include <ShlObj.h>
 
 
@@ -23,13 +23,6 @@ void	raw_lcu_api::set_game_commandline(std::string commandline) {
 			domain.port = commandline.substr(port_pos, port_end - port_pos);
 		}
 	}
-
-#ifdef DEBUG
-	std::cout << "-----------" << std::endl;
-	std::cout << domain.port << std::endl;
-	std::cout << domain.auth_token << std::endl;
-	std::cout << "-----------" << std::endl;
-#endif // DEBUG
 }
 
 
@@ -65,26 +58,17 @@ GAME_STATUS		raw_lcu_api::get_game_status() {
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, client_get_player_status_api);
 	auto	status = get_enum_gamestatus(response);
-#ifdef DEBUG
-	std::cout << "游戏状态: " << game_status_dict[static_cast<int>(status)][0] << std::endl;
-#endif // DEBUG
 	return	status;
 }
 
 void	raw_lcu_api::accept_game() {
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 	std::string response = request.request(LCU_REQUEST::RequestMethod::POST_METHOD, client_accept_matching_api, "", "");
-#ifdef DEBUG
-	std::cout << response << std::endl;
-#endif // DEBUG
 }
 
 void	raw_lcu_api::auto_next_game() {
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 	std::string response = request.request(LCU_REQUEST::RequestMethod::POST_METHOD, "/lol-lobby/v2/play-again", "", "");
-#ifdef DEBUG
-	std::cout << response << std::endl;
-#endif // DEBUG
 }
 
 void	raw_lcu_api::search_queue() {
@@ -96,7 +80,7 @@ void	raw_lcu_api::search_queue() {
 #endif // DEBUG
 }
 
-void	raw_lcu_api::lock_champions(int	champion_id) {
+std::string		raw_lcu_api::lock_champions(int	champion_id,bool completed) {
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, matching_get_myteam_summonerinfo_api);
 	int	localPlayerCellId = 0;
@@ -105,16 +89,30 @@ void	raw_lcu_api::lock_champions(int	champion_id) {
 		json	js = json::parse(response);
 		json	data;
 		data["championId"] = champion_id;
-		data["completed"] = true;
+		data["completed"] = completed;
 		if (js.contains("localPlayerCellId"))
 		{
 			localPlayerCellId = js["localPlayerCellId"].get<int>();
-			response = request.request(LCU_REQUEST::RequestMethod::PATCH_METHOD, "/lol-champ-select/v1/session/actions/", std::to_string(localPlayerCellId), data.dump());
+			response = request.request(LCU_REQUEST::RequestMethod::PATCH_METHOD, lock_champ_completed_api, std::to_string(localPlayerCellId), data.dump());
 		}
 	}
 	catch (const std::exception&)
 	{
+		return	std::string(__FUNCTION__);
 	}
+	return	response;
+}
+
+bool raw_lcu_api::bench_champiosn(int champion_id)
+{
+	LCU_REQUEST& request = LCU_REQUEST::getInstance();
+	std::string	url = aram_swap_champ_api + std::to_string(champion_id);
+	std::string response=request.request(LCU_REQUEST::RequestMethod::POST_METHOD, url);
+	if (response.empty())
+	{
+		return	true;
+	}
+	return	false;
 }
 
 //2023-8-16重构
@@ -193,7 +191,6 @@ LCU_JSON_RESPONSE::LolRankedData raw_lcu_api::puuid_get_rank_datas(std::string p
 }
 
 LCU_JSON_RESPONSE::LolMatchHistory	raw_lcu_api::getHistoryMatchDatas(std::string puuid, std::string accountid, int min, int max) {
-	puuid = "d95b2cd7-a4c2-5d06-a591-ee71a7716e01";//debug mode
 	std::string puuid_get_player_history_data_api1 = "/lol-match-history/v1/products/lol/" + puuid + "/matches?begIndex=" + std::to_string(min) + "&endIndex=" + std::to_string(max);
 	LCU_JSON_RESPONSE::LolMatchHistory	ret_datas;
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
@@ -249,7 +246,7 @@ LCU_JSON_RESPONSE::LolGameDataChampSummary raw_lcu_api::get_all_champions()
 {
 	LCU_JSON_RESPONSE::LolGameDataChampSummary	champs;
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
-	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, get_owner_champions_api);
+	std::string response = request.request(LCU_REQUEST::RequestMethod::GET_METHOD, get_all_champions_api);
 	try
 	{
 		champs = nlohmann::json::parse(response);
@@ -286,12 +283,3 @@ void raw_lcu_api::ReRoll()
 	std::string response = request.request(LCU_REQUEST::RequestMethod::POST_METHOD, use_reroller_api);
 }
 
-
-
-HELPER::Match_helper::Match_helper()//战绩助手实现
-{
-}
-
-HELPER::Match_helper::~Match_helper()
-{
-}

@@ -45,6 +45,8 @@ bool dynamic_skin_host_my::check_Allow()
 	}
 	return	ret;
 }
+
+
 std::string	dynamic_skin_host_my::download_dll() {
 	CHAR szPath[MAX_PATH] = { 0 };
 	SHGetSpecialFolderPathA(NULL, szPath, CSIDL_APPDATA, FALSE);
