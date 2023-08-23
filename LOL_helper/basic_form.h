@@ -14,7 +14,7 @@
 #include	"lcu_riot/config.h"
 #include	"game_helper.h"
 #include	"helper_setting.h"
-
+#include	"timeout_ui.h"
 
 #define	DYNAMIC_SKIN		//加入动态换肤
 #ifdef DYNAMIC_SKIN
@@ -111,8 +111,8 @@ private://函数区
 	//处理托盘图标上的事件
 	LRESULT OnTrayIcon(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL bHandled);
 
-	//辅助函数
-	static std::wstring	add_str_status(const std::wstring& content,bool status);
+	//辅助函数 弃用
+	//static std::wstring	add_str_status(const std::wstring& content,bool status);
 
 	//网络请求结束后的回调函数
 	void	Receive_Datas1(GAME_STATUS gamestatus);

@@ -100,11 +100,18 @@ bool Helper_Setting::isWhichReroller(ui::EventArgs* Args)
 }
 void Helper_Setting::saveToConfigJson()
 {
-	config_settings.configs._classic_config.auto_lock = _config.autolock;
-	config_settings.configs._classic_config.champ_id = getIdByChampName(_config.lock_champname);
 	config_settings.configs.accept_timeout = _config.accept_timeout;
 	config_settings.configs._classic_config.lockchamp_timeout = _config.autolock_timeout;
 	config_settings.configs._aram_config.Use_Reroller = _config.reroll;
+	config_settings.configs._classic_config.champ_id = _config.lock_champid;
+	config_settings.configs._classic_config.auto_lock = _config.autolock;
+	config_settings.configs._aram_config.wait_lova_champs_max_sec = _config.aram_maxtimeout;
+	std::sort(_config.lova_champlist.begin(), _config.lova_champlist.end(), [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
+		return p1.first < p2.first;
+		});
+	_config.lova_champlist.erase(std::unique(_config.lova_champlist.begin(), _config.lova_champlist.end(), [](const std::pair<int, int>& p1, const std::pair<int, int>& p2) {
+		return p1.first == p2.first;
+		}), _config.lova_champlist.end());
 	config_settings.configs._aram_config.love_champs = _config.lova_champlist;
 }
 bool Helper_Setting::OnControlSelected(ui::EventArgs* Args)
@@ -275,13 +282,7 @@ bool Helper_Setting::OnBtnClicked(ui::EventArgs* args)
 		this->Close(1);
 	}
 	else if (c == (ULONG64)_ui_saveConfig) {
-		config_settings.configs.accept_timeout = _config.accept_timeout;
-		config_settings.configs._classic_config.lockchamp_timeout = _config.autolock_timeout;
-		config_settings.configs._aram_config.Use_Reroller = _config.reroll;
-		config_settings.configs._classic_config.champ_id = _config.lock_champid;
-		config_settings.configs._classic_config.auto_lock = _config.autolock;
-		config_settings.configs._aram_config.love_champs = _config.lova_champlist;
-		config_settings.configs._aram_config.wait_lova_champs_max_sec = _config.aram_maxtimeout;//int n3
+		saveToConfigJson();
 		config_settings.save_current_config();
 		this->Close(1);
 	}

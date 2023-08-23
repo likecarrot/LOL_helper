@@ -67,6 +67,9 @@
     <Filter Include="ui\helper_setting_ui\lova_champ_ui">
       <UniqueIdentifier>{bd5bc574-3ac7-420b-86d6-ee30b16dd32c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ui\timeout_ui">
+      <UniqueIdentifier>{3650395d-f40f-4f7f-a766-9014f020cff4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -137,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="lova_champ_ui.cpp">
       <Filter>ui\helper_setting_ui\lova_champ_ui</Filter>
+    </ClCompile>
+    <ClCompile Include="timeout_ui.cpp">
+      <Filter>ui\timeout_ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +223,9 @@
     </ClInclude>
     <ClInclude Include="lova_champ_ui.h">
       <Filter>ui\helper_setting_ui\lova_champ_ui</Filter>
+    </ClInclude>
+    <ClInclude Include="timeout_ui.h">
+      <Filter>ui\timeout_ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

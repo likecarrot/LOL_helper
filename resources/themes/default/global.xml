@@ -275,4 +275,10 @@
         selectedtextcolor="red" />
     <Class name="_edit_class" hotimage="file='../public/edit/edit1.png' corner='2,2,2,2'"
         focusedimage="file='../public/edit/edit2.png' corner='2,2,2,2'" />
+    <Class name="_btn_wnd_close" width="20" height="20"
+        normalimage="file='../public/button/btn_wnd_gray_close.png' dest='4,4,16,16'"
+        hotimage="file='../public/button/btn_wnd_white_close_hovered.png'  "
+        pushedimage="file='../public/button/btn_wnd_gray_close.png' dest='4,4,16,16'" />
+    <TextColor name="bk_wnd_transparent" value="#01000000" />
+
 </Global>

@@ -184,8 +184,8 @@ namespace GAME_HELPER
 		getconfig_for_configfiles();
 		int	clock_sec = 0;
 		int	rolls = 0;
-		while (request.get_game_status() == GAME_STATUS::ChampSelect) {
-			std::map<int, int>	now_all_champs;	//指的是 我所选择的 和 备战席上的英雄 并不包括其他玩家选择的英雄 英雄id -- 好感度
+
+		if (request.get_game_status() == GAME_STATUS::ChampSelect) {
 			if (use_reroller==1&&rolls==0)
 			{
 				request.ReRoll(); rolls++;
@@ -201,43 +201,51 @@ namespace GAME_HELPER
 					request.ReRoll(); rolls++;
 				}
 			}
+			_last_champ = get_now_select_champ();	//使用完骰子之后 保存当前英雄,如果是程序改变英雄 会改变这个值 如果是玩家手动换 则会直接退出循环
+			do
+			{
+				std::map<int, int>	now_all_champs;	//指的是 我所选择的 和 备战席上的英雄 并不包括其他玩家选择的英雄 英雄id -- 好感度
+				int now_select = get_now_select_champ();
+				int now_select_score = get_score_(now_select);
+				now_all_champs.emplace(now_select, now_select_score);
 
-			now_all_champs.emplace(select, get_score_(select));
-			int now_select_score = get_score_(select);
-			auto champions = get_all_bech_champs();
-			for (const auto index : champions) {
-				int s = get_score_(index);
-				now_all_champs.emplace(index, s);
-			}
-
-			// 遍历 now_all_champs 的所有键值对
-			int maxKey = 0;
-			int maxValue = 0;
-			for (const auto pair : now_all_champs) {
-				if (pair.second > maxValue) {
-					maxValue = pair.second;
-					maxKey = pair.first;
+				auto champions = get_all_bech_champs();
+				for (const auto index : champions) {
+					int s = get_score_(index);
+					now_all_champs.emplace(index, s);
 				}
-			}
-			if (maxValue!=0&&maxValue>now_select_score)
-			{
-				request.bench_champiosn(maxKey);
-				_last_champ = maxKey;
-			}
-			if (wait_max_sec != 0)
-			{
-				clock_sec++;
-				if (clock_sec > wait_max_sec)
+
+				// 遍历 now_all_champs 的所有键值对
+				int maxKey = 0;
+				int maxValue = 0;
+				for (const auto pair : now_all_champs) {
+					if (pair.second > maxValue) {
+						maxValue = pair.second;
+						maxKey = pair.first;
+					}
+				}
+				if (maxValue != 0 && maxValue > now_select_score)
 				{
-					break;
+					OutputDebugStringA(("now select:" +std::to_string(now_select)+" " + std::to_string(now_select_score) + "  replace score:"+std::to_string(maxKey)+" "+std::to_string(maxValue)+"\n").c_str());
+					request.bench_champiosn(maxKey);
+					_last_champ = maxKey;
 				}
-			}
-			if (_last_champ!=0&& _last_champ != get_now_select_champ())
-			{
-				OutputDebugStringA("玩家自己更改了英雄 所以提前退出了循环\n");
-				break;	//退出循环
-			}
-			Sleep(1000);
+				Sleep(1000);
+				if (_last_champ != get_now_select_champ())
+				{
+					OutputDebugStringA("玩家自己更改了英雄 所以提前退出了循环\n");
+					break;	//退出循环
+				}
+				if (wait_max_sec != 0)
+				{
+					clock_sec++;
+					if (clock_sec > wait_max_sec)
+					{
+						OutputDebugStringA("已经超时 所以退出了循环\n");
+						break;
+					}
+				}
+			} while (request.get_game_status() == GAME_STATUS::ChampSelect);
 		}
 		return	true;
 	}

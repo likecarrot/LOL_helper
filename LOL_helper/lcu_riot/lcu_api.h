@@ -29,6 +29,7 @@ public:
 
 	GAME_STATUS	get_game_status();
 	void	accept_game();
+	void	decline_game();	
 	void	auto_next_game();	//这个函数是游戏结束后,重新开始进入模式,但是并不进入匹配队列
 	void	search_queue();		//这个函数是在游戏房间内,进入匹配队列
 	std::string	lock_champions(int	champion_id,bool completed=true);		//锁定选择英雄
@@ -63,6 +64,7 @@ private:
 	const	std::string	puuid_get_player_rank_data_api = "/lol-ranked/v1/ranked-stats/";			//通过puuid获取段位信息
 	const	std::string	client_get_player_status_api = "/lol-gameflow/v1/gameflow-phase";			//获取客户端状态,比如 游戏中,大厅中
 	const	std::string	client_accept_matching_api = "/lol-matchmaking/v1/ready-check/accept";		//接收对局
+	const	std::string	client_decline_matching_api = "/lol-matchmaking/v1/ready-check/decline";	//拒绝对局
 	const	std::string	matching_get_myteam_summonerinfo_api = "/lol-champ-select/v1/session";		//获取己方队伍的信息,比如 summoner accoutid
 	const   std::string	get_current_game_mode_api = "/lol-gameflow/v1/session";					//430 匹配 420 单双排位 440灵活 450 大乱斗 云顶匹配 1090  云顶排位 1100 云顶狂暴 1130 云顶双人作战 1160
 	const	std::string use_reroller_api = "/lol-champ-select/v1/session/my-selection/reroll";	//使用骰子

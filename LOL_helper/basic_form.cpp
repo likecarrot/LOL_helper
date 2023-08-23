@@ -37,6 +37,7 @@ void BasicForm::InitWindow()
 	init_all_controls();
 	init_set_listen_controls();
 	config_file_settings_to_ui();
+
 	StdClosure	wait_game_start = [this]() {
 		do
 		{
@@ -107,7 +108,7 @@ bool	BasicForm::OnSelected(ui::EventArgs* args) {
 		update_select_status();
 		ui::CheckBox* c = static_cast<ui::CheckBox*>((args->pSender));
 		auto	str = c->GetText();
-		add_str_status(str, c->IsSelected());
+		//add_str_status(str, c->IsSelected());
 		c->SetText(str);
 	}
 	return	true;
@@ -179,23 +180,21 @@ void	BasicForm::init_set_listen_controls() {
 	_helper_settings->AttachClick(std::bind(&BasicForm::OnHelperSettings, this, std::placeholders::_1));
 }
 
-std::wstring	BasicForm::add_str_status(const std::wstring& content, bool status) {
-	std::wstring	ret(content);
-	if (content.find(L"-") == std::wstring::npos) {
-		ret += L"-";
-	}
-	else {
-		ret = content.substr(0, content.find(L"-") + 1);
-	}
-
-	if (status)
-	{
-		ret += L"开启";
-	}
-	else
-		ret += L"关闭";
-	return	ret;
-}
+//std::wstring	BasicForm::add_str_status(const std::wstring& content, bool status) {
+//	std::wstring	ret(content);
+//	if (content.find(L"-") == std::wstring::npos) {
+//		ret += L"-";
+//	}
+//	else {
+//		ret = content.substr(0, content.find(L"-") + 1);
+//	}
+//
+//	if (status)
+//		ret += L"开启";
+//	else
+//		ret += L"关闭";
+//	return	ret;
+//}
 
 void	BasicForm::Receive_Datas1(GAME_STATUS gamestatus) {
 	StdClosure	closure = [this, gamestatus]() {
@@ -228,12 +227,19 @@ void	BasicForm::Receive_Datas1(GAME_STATUS gamestatus) {
 			if (config_settings.configs.accept_status == true)
 				if (config_settings.configs.accept_timeout!=0)
 				{
-					nbase::ThreadManager::PostDelayedTask(kThreadNetwork,[]() {
-						raw_lcu_api::getInstance().accept_game();
-						}, nbase::TimeDelta::FromSeconds(config_settings.configs.accept_timeout));
-				}else
-					raw_lcu_api::getInstance().accept_game();
-
+					Notify_Ui_Base* window = new Notify_Ui_Base(config_settings.configs.accept_timeout * 1000);
+					window->Create(NULL, NULL, WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
+					window->ShowWindow();
+					window->CenterWindow();
+					// 获取窗口位置信息
+					HWND hwnd = FindWindowA(NULL, "League of Legends");
+					RECT rect;
+					GetWindowRect(hwnd, &rect);
+					ui::UiRect	pos;
+					pos.top = rect.top;
+					pos.left = rect.left - 100;
+					window->SetPos(pos, false, SWP_NOSIZE, NULL, false);
+				}
 			break;
 		case GAME_STATUS::ChampSelect:
 			display_game_status->SetText(L"选英雄中");
@@ -374,7 +380,7 @@ bool	BasicForm::Open_dynamic_skin(ui::EventArgs* args) {
 		}
 		ui::CheckBox* c = static_cast<ui::CheckBox*>((args->pSender));
 		auto	str = c->GetText();
-		add_str_status(str, c->IsSelected());
+		//add_str_status(str, c->IsSelected());
 		c->SetText(str);
 	}
 	return	true;
@@ -425,23 +431,23 @@ void	BasicForm::update_select_status() {
 void	BasicForm::config_file_settings_to_ui() {
 	//修改ui界面的点击状态
 	_ui_accept->Selected(config_settings.configs.accept_status, false);
-	_ui_accept->SetText(add_str_status(_ui_accept->GetText(), _ui_accept->IsSelected()));
+	//_ui_accept->SetText(add_str_status(_ui_accept->GetText(), config_settings.configs.accept_status));
 
 	_ui_nextgame->Selected(config_settings.configs.nextgame_status, false);
-	_ui_nextgame->SetText(add_str_status(_ui_nextgame->GetText(), _ui_nextgame->IsSelected()));
+	//_ui_nextgame->SetText(add_str_status(_ui_nextgame->GetText(), config_settings.configs.nextgame_status));
 
 
 	_ui_searchqueue->Selected(config_settings.configs.searchqueue_status, false);
-	_ui_searchqueue->SetText(add_str_status(_ui_searchqueue->GetText(), _ui_searchqueue->IsSelected()));
+	//_ui_searchqueue->SetText(add_str_status(_ui_searchqueue->GetText(), config_settings.configs.searchqueue_status));
 
 	_ui_player_helper->Selected(config_settings.configs.matching_helper, false);
-	_ui_player_helper->SetText(add_str_status(_ui_player_helper->GetText(), _ui_player_helper->IsSelected()));
+	//_ui_player_helper->SetText(add_str_status(_ui_player_helper->GetText(), config_settings.configs.matching_helper));
 
 	_ui_aram_helper->Selected(config_settings.configs.aram_helper, false);
-	_ui_aram_helper->SetText(add_str_status(_ui_aram_helper->GetText(), _ui_aram_helper->IsSelected()));
+	//_ui_aram_helper->SetText(add_str_status(_ui_aram_helper->GetText(), config_settings.configs.aram_helper));
 
 	_ui_classic_helper->Selected(config_settings.configs.classic_helper, false);
-	_ui_classic_helper->SetText(add_str_status(_ui_classic_helper->GetText(), _ui_classic_helper->IsSelected()));
+	//_ui_classic_helper->SetText(add_str_status(_ui_classic_helper->GetText(), config_settings.configs.classic_helper));
 }
 
 bool BasicForm::OnHelperSettings(ui::EventArgs* args)

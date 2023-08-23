@@ -62,8 +62,16 @@ GAME_STATUS		raw_lcu_api::get_game_status() {
 }
 
 void	raw_lcu_api::accept_game() {
+	OutputDebugStringA("接受对局\n");
 	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
 	std::string response = request.request(LCU_REQUEST::RequestMethod::POST_METHOD, client_accept_matching_api, "", "");
+}
+
+void raw_lcu_api::decline_game()
+{
+	OutputDebugStringA("拒绝对局\n");
+	LCU_REQUEST& request = LCU_REQUEST::getInstance(); // add REQUEST as a member variable
+	std::string response = request.request(LCU_REQUEST::RequestMethod::POST_METHOD, client_decline_matching_api, "", "");
 }
 
 void	raw_lcu_api::auto_next_game() {

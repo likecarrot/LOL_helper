@@ -177,6 +177,7 @@
     <ClCompile Include="MiscThread.cpp" />
     <ClCompile Include="pop_form.cpp" />
     <ClCompile Include="provider.cpp" />
+    <ClCompile Include="timeout_ui.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="VirtualTileBox.cpp" />
   </ItemGroup>
@@ -205,6 +206,7 @@
     <ClInclude Include="pop_form.h" />
     <ClInclude Include="provider.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="timeout_ui.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="VirtualTileBox.h" />
   </ItemGroup>

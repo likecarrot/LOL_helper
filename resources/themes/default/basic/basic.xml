@@ -5,7 +5,7 @@
       <Control height="auto" width="auto" margin="4" valign="center" bkimage="logo_18x18.png" />
       <Label text="LOL接受对局助手" margin="2,0,0,0" valign="center" />
       <Control />
-      <Button class="btn_wnd_close" name="closebtn1" margin="0,0,0,0" />
+      <Button class="_btn_wnd_close" name="closebtn1" margin="0,0,0,0" />
     </HBox>
 
     <!-- 横线是宽 width 竖线是高 height -->
