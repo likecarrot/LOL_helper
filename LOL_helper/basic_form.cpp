@@ -323,17 +323,19 @@ void	BasicForm::Receive_Datas3(LCU_JSON_RESPONSE::LolRankedData rank_Datas) {
 		auto	TFT_DOUBLE_UP = rank_Datas.queue_map.ranked_tft_double_up;
 		if (!TFT_DOUBLE_UP.tier.empty()) {
 			std::wstring	n = StringToWString(F_ClassicRank_tiers.GetSecond(TFT_DOUBLE_UP.tier)) + L" " + StringToWString(TFT_DOUBLE_UP.division) + L" " + std::to_wstring(TFT_DOUBLE_UP.league_points);
-			_ui_RANKED_SOLO_5x5->SetText(n);
+			_ui_RANKED_TFT_DOUBLE_UP->SetText(n);
 		}
 	};
 	Post2UI(closure);//Global network request Thread
 }
 
 void	BasicForm::set_current_player_icon(std::string icon_path) {
-	StdClosure	closure = [this, icon_path]() {
-		summoner_icon->SetBkImage(string2wstring(icon_path));
-	};
-	Post2UI(closure);//Global network request Thread
+	nbase::ThreadManager::PostDelayedTask(kThreadUi, [this, icon_path]() {
+		if (!icon_path.empty())
+		{
+			summoner_icon->SetBkImage(string2wstring(icon_path));
+		}
+		}, nbase::TimeDelta::FromMilliseconds(1000));
 }
 
 #ifdef DYNAMIC_SKIN

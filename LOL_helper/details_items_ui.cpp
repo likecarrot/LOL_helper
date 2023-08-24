@@ -55,8 +55,10 @@ bool Details_Item::OnRemove(ui::EventArgs* args)
 	return parent->Remove(this);
 }
 void	Details_Item::SetBkImg(std::string path) {
-	if (!path.empty())
-	{
-		use_champ->SetBkImage(string2wstring(path));
-	}
+	nbase::ThreadManager::PostDelayedTask(kThreadUi, [this,path]() {
+		if (!path.empty())
+		{
+			use_champ->SetBkImage(string2wstring(path));
+		}
+		},nbase::TimeDelta::FromMilliseconds(1000));
 }

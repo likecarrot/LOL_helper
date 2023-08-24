@@ -47,16 +47,67 @@ public:
 		team_player_rank_SOLO_last->SetText(StringToWString(F_ClassicRank_tiers.GetSecond(_info.rank_datas.queue_map.ranked_solo_5_x5.previous_season_end_tier)  + _info.rank_datas.queue_map.ranked_solo_5_x5.previous_season_end_division));
 		team_player_rank_FLEX->SetText(StringToWString(F_ClassicRank_tiers.GetSecond(_info.rank_datas.queue_map.ranked_flex_sr.tier)  + _info.rank_datas.queue_map.ranked_flex_sr.division));
 		team_player_rank_FLEX_last->SetText(StringToWString(F_ClassicRank_tiers.GetSecond(_info.rank_datas.queue_map.ranked_flex_sr.previous_season_end_tier)  + _info.rank_datas.queue_map.ranked_flex_sr.previous_season_end_division));
-		top1->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
-		top2->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top2)));
-		top3->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top3)));
-		top4->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top4)));
-		top5->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top5)));
-		top6->SetBkImage(string2wstring(GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top6)));
+		
+		
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Match_Items::setBkimg1, this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Match_Items::setBkimg2, this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Match_Items::setBkimg3, this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Match_Items::setBkimg4, this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Match_Items::setBkimg5, this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
+		nbase::ThreadManager::PostTask(kThreadNetwork, nbase::Bind(&Match_Items::setBkimg6, this, GAME_RESOURCES::GAME_RES::getInstance().getIconsPath(GAME_RESOURCES::CHAMPION_ICONS, _info.top1)));
+
 	};
 
 private:
 	bool OnRemove(ui::EventArgs* args);
+	void	setBkimg1(std::string path) {
+		nbase::ThreadManager::PostTask(kThreadUi, [this, path]() {
+			if (!path.empty())
+			{
+				top1->SetBkImage(string2wstring(path));
+			}
+			});
+	}
+	void	setBkimg2(std::string path) {
+		nbase::ThreadManager::PostTask(kThreadUi, [this, path]() {
+			if (!path.empty())
+			{
+				top2->SetBkImage(string2wstring(path));
+			}
+			});
+	}
+	void	setBkimg3(std::string path) {
+		nbase::ThreadManager::PostTask(kThreadUi, [this, path]() {
+			if (!path.empty())
+			{
+				top3->SetBkImage(string2wstring(path));
+			}
+			});
+	}
+	void	setBkimg4(std::string path) {
+		nbase::ThreadManager::PostTask(kThreadUi, [this, path]() {
+			if (!path.empty())
+			{
+				top4->SetBkImage(string2wstring(path));
+			}
+			});
+	}
+	void	setBkimg5(std::string path) {
+		nbase::ThreadManager::PostTask(kThreadUi, [this, path]() {
+			if (!path.empty())
+			{
+				top5->SetBkImage(string2wstring(path));
+			}
+			});
+	}
+	void	setBkimg6(std::string path) {
+		nbase::ThreadManager::PostTask(kThreadUi, [this, path]() {
+			if (!path.empty())
+			{
+				top6->SetBkImage(string2wstring(path));
+			}
+			});
+	}
 private:
 	MATCH_ITEMS::NEED_DATAS _info;
 
